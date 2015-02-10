@@ -42,4 +42,10 @@ Take lots of 0 target trips and use them with the drivers' 200 trips (as target=
 #### Some good results
 1. speed quantile features and gradient boost method
 2. speed, acceleration and curve features
- 
+3. trimming outliers worked better than averaging them out 
+4. Using Speed, Acceleration, Centripetal Acceleration, Heading Change, and et al. features processed by RandomForest: 0.83578.
+5. > Using randomForest produced the best result (0.88315)
+> Used 5 contrasting drivers, chosen at random (found what RobRob found: increasing drivers did not improve performance: tried with 10)
+> Feature set includes distance, time and %les for speed, acceleration and turn( same as heading changes as mentioned by RobRob?)
+> Logistic performed far worse, best score: 0.77173, same feature set
+> as for outliers, using %les probably helps eliminate them if you don't use mean values and don't include anything in the first and last 1 percent (total distance traveled is the only one to be impacted, in case of "hyper space"  jumps). 
