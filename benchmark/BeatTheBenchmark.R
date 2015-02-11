@@ -1,4 +1,4 @@
-drivers <- list.files("./drivers/",full.names=TRUE)
+drivers <- list.files("data/drivers",full.names=TRUE)
 
 zscore <- function(x)
 {

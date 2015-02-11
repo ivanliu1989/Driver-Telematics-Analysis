@@ -1,5 +1,5 @@
-# Solution by Stéphane Soulier @pypass
-# Vecorized by Leo Büttiker @leobuettiker
+# Solution by St?phane Soulier @pypass
+# Vecorized by Leo B?ttiker @leobuettiker
 # New in previous versions:
 # * Add a split for the reference data
 # * new smoothing version
@@ -12,13 +12,13 @@ require(doSNOW)
 require(data.table)
 
 datadirectory <- "data/drivers/"
-cachedir <- "intermediate/drivers/"
-nrOfCores <- 4
+cachedir <- "data/intermediate/drivers"
+nrOfCores <- 2
 nrOfDriversToCompare <- 5
 
 features <- function(trip) {
-  dist = sqrt(diff(trip[,1])^2 + diff(trip[,2])^2)
-  smoothDist <- rollapply(dist, width = 5, FUN = median)
+  dist = sqrt(diff(trip[,1])^2 + diff(trip[,2])^2) # distance
+  smoothDist <- rollapply(dist, width = 5, FUN = median) # rolling median smooth
   speed <- smoothDist * 3.6
   quantile(speed, seq(0.05,1, by = 0.05), na.rm=T)
 }
