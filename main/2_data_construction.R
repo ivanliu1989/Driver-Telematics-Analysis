@@ -1,10 +1,10 @@
 setwd('/Users/ivan/Work_directory/DTA')
 rm(list=ls());gc()
-require(data.table);require(zoo);require(Rcpp)
-sourceCpp('main/functions.cpp')
+require(data.table);require(zoo);
+#require(Rcpp);sourceCpp('Driver-Telematics-Analysis/main/functions.cpp')
 
 datadirectory <- 'data/drivers/'
-drivers <- list.files(datadirectory)
+drivers <- sort(as.numeric(list.files(datadirectory)))
 trips <- 1:200
 path <- "data/drivers/"
 
@@ -19,11 +19,14 @@ speedDist <- function(trip) {
 }
 
 ### main ###
+date()
 for (driver in drivers){
     for (trip in trips){
         sub_df <- data.frame()
         files <- paste0(path, driver, '/', trip, ".csv")
-        if (trip==1) print(files)
+        if (trip==200) {
+            print(paste0(files, ' | ' ,date())) 
+            }
         trip_data <- read.csv(files,header = T,stringsAsFactor=F)
         # id
         driver_trip <- paste0(driver,'_',trip)
