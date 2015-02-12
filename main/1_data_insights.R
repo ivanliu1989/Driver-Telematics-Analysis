@@ -1,6 +1,6 @@
 setwd('/Users/ivan/Work_directory/DTA')
-rm(list=ls());gc();require(plyr);
-require(data.table);require(ggplot2)
+rm(list=ls());gc()
+require(data.table);require(ggplot2);require(plyr);
 
 # drivers <- list.files("data/drivers",full.names=TRUE)
 # tripsFiles <- paste0(drivers,"/",1:200,".csv")
