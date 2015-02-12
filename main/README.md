@@ -9,3 +9,5 @@
 https://thecuriousastronomer.wordpress.com/2014/09/15/derivation-of-centripetal-acceleration-using-polar-coordinates/
 
 http://math.stackexchange.com/questions/1115619/centripetal-acceleration-for-a-polyline
+
+eg: excessive braking, quick acceleration, location, speed, and direction
