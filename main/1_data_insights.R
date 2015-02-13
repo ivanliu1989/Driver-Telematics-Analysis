@@ -1,4 +1,5 @@
 setwd('/Users/ivan/Work_directory/DTA')
+setwd('H:/Machine_Learning/DTA')
 rm(list=ls());gc()
 require(data.table);require(ggplot2);require(plyr);
 
@@ -28,4 +29,4 @@ plotDriver <- function(driver, driver2=driver){
     plot(p1)
 }
 
-plotDriver(1,9)
+plotDriver(1,1)
