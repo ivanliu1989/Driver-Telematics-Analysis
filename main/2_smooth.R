@@ -15,7 +15,7 @@ speedDist <- function(trip) {
 
 speedDist_smooth <- function(trip) {
     dist = sqrt(diff(trip[,1])^2 + diff(trip[,2])^2) # distance
-    smoothDist <- dlmSmooth(dist, dlmModPoly(1, dV = 15100, dW = 1470))
+    smoothDist <- dlmSmooth(dist, dlmModPoly(1)) # V 10^2 degree , dV = 15100, dW = 1470
     #smoothDist <- rollapply(dist, width = 5, FUN = median) # rolling median smooth
     speed <- dropFirst(smoothDist$s) * 3.6
 }
