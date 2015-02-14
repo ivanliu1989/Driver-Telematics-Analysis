@@ -28,22 +28,20 @@ for (driver in drivers){
         trip_data <- data.matrix(read.csv(files,header = T,stringsAsFactor=F))
         trip_data <- Kalman_Filter(trip_data,1,1,10) #Q_metres_per_second = 50*1000/3600
         
-        # id
-        driver_trip <- paste0(driver,'_',trip)
         # target
         target <- 0
         # speed
         feature_speed <- speedDist(trip_data)
         # df
-        main_df[d_num,] <- c(driver_trip, t(feature_speed), target)
+        main_df[d_num,] <- c(driver, trip, t(feature_speed), target)
         
         if (trip==200) {
             print(paste0(files, ' | ' ,date())) 
         }
     }
 }
-main_df <- data.frame(main_df)
-names(main_df) <- c('driver_trip', names(feature_speed), 'target')
+main_df <- data.frame(main_df,stringsAsFactors = F)
+names(main_df) <- c('driver','trip', names(feature_speed), 'target')
 dim(main_df);head(main_df)
 save(main_df, file='data/main_df.RData')
-
+write.csv(main_df, file = 'data/main_df.csv', quote = F, row.names = F)
