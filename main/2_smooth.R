@@ -50,3 +50,38 @@ plot(trip, type=opts[1])
 
 quantile(trip_sp_smooth, seq(0.05,1, by = 0.05), na.rm=T)
 quantile(trip_sp_smooth_median, seq(0.05,1, by = 0.05), na.rm=T)
+
+### Kalman_filtering
+source('Driver-Telematics-Analysis/main/kalman_filtering.R')
+trip_kalman_smooth <- Kalman_Filter(trip,1,1,10) #Q_metres_per_second = 50*1000/3600
+par(mfcol = c(1,1))
+plot(trip)
+lines(trip_kalman_smooth, type='o',col='red')
+
+trip_sp <- speedDist(trip) 
+trip_sp_kalman <- speedDist(trip_kalman_smooth)
+plot(trip_sp, type='l')
+lines(trip_sp_kalman, type='l',col='red')
+
+quantile(trip_sp, seq(0.05,1, by = 0.05), na.rm=T)
+quantile(trip_sp_kalman, seq(0.05,1, by = 0.05), na.rm=T)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
