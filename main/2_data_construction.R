@@ -19,7 +19,7 @@ speedDist <- function(trip) {
 
 ### main ###
 date(); d_num <- 0
-main_df <- matrix(0, nrow = length(drivers)*200, ncol = 23, dimnames = list(NULL, NULL))
+main_df <- matrix(0, nrow = length(drivers)*200, ncol = 24, dimnames = list(NULL, NULL))
 for (driver in drivers){
     
     for (trip in trips){
@@ -33,8 +33,10 @@ for (driver in drivers){
         target <- 0
         # speed
         feature_speed <- speedDist(trip_data)
+        # avg_speed
+        avg_speed <- mean(feature_speed)
         # df
-        main_df[d_num,] <- c(driver, trip, t(feature_speed), target)
+        main_df[d_num,] <- c(driver, trip, t(feature_speed), avg_speed, target)
         
         if (trip==200) {
             cat(paste0(files, ' | ', date(), ' | ', d_num/(length(drivers)*200))) 
@@ -42,7 +44,7 @@ for (driver in drivers){
     }
 }
 main_df <- data.frame(main_df,stringsAsFactors = F)
-names(main_df) <- c('driver','trip', names(feature_speed), 'target')
+names(main_df) <- c('driver','trip', names(feature_speed), 'avg_speed', 'target')
 dim(main_df);head(main_df)
 save(main_df, file='data/main_df.RData')
 write.csv(main_df, file = 'data/main_df.csv', quote = F, row.names = F)
