@@ -4,7 +4,7 @@ rm(list=ls());gc()
 require(data.table);require(ggplot2);require(plyr);
 require(dlm);require(zoo);
 
-i <- 180
+i <- 200
 trip = read.csv(paste0('data/drivers/1/',i,'.csv',sep = ''))
 
 ### function
@@ -39,10 +39,14 @@ trip_sp_smooth_median <- speedDist_smooth_median(trip)
 
 ### diagram
 opts = c("p","l","o","b","c","s","S","h") 
-plot(trip_sp, type="n") 
-lines(trip_sp, type=opts[2])
-lines(trip_sp_smooth, type=opts[2], col = 'blue')
-lines(trip_sp_smooth_median, type=opts[2],col = 'red')
+par(mfcol = c(2,2))
+plot(trip_sp, type=opts[2]) 
+plot(trip_sp_smooth, type=opts[2])
+plot(trip_sp_smooth_median, type=opts[2])
+plot(trip, type=opts[1])
+#lines(trip_sp, type=opts[2])
+#lines(trip_sp_smooth, type=opts[5], col = 'blue')
+#lines(trip_sp_smooth_median, type=opts[6],col = 'red')
 
 quantile(trip_sp_smooth, seq(0.05,1, by = 0.05), na.rm=T)
 quantile(trip_sp_smooth_median, seq(0.05,1, by = 0.05), na.rm=T)
