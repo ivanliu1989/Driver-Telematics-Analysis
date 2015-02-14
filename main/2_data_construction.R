@@ -18,17 +18,13 @@ speedDist <- function(trip) {
 
 ### main ###
 date(); d_num <- 0
-main_df <- matrix(0, nrow = length(drivers), ncol = 22, dimnames = list(NULL, NULL))
+main_df <- matrix(0, nrow = length(drivers)*200, ncol = 22, dimnames = list(NULL, NULL))
 for (driver in drivers){
     
     for (trip in trips){
         
         d_num <- d_num + 1
-        sub_df <- data.frame()
         files <- paste0(path, driver, '/', trip, ".csv")
-        if (trip==200) {
-            print(paste0(files, ' | ' ,date())) 
-            }
         trip_data <- data.matrix(read.csv(files,header = T,stringsAsFactor=F))
         trip_data <- Kalman_Filter(trip_data,1,1,10) #Q_metres_per_second = 50*1000/3600
         
@@ -38,9 +34,12 @@ for (driver in drivers){
         target <- 0
         # speed
         feature_speed <- speedDist(trip_data)
-        
         # df
         main_df[d_num,] <- c(driver_trip, t(feature_speed), target)
+        
+        if (trip==200) {
+            print(paste0(files, ' | ' ,date())) 
+        }
     }
 }
 main_df <- data.frame(main_df)
