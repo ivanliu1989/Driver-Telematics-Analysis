@@ -4,7 +4,7 @@ rm(list=ls());gc()
 require(data.table);require(ggplot2);require(plyr);
 require(dlm);require(zoo);
 
-i <- 200
+i <- 120
 trip = read.csv(paste0('data/drivers/1/',i,'.csv',sep = ''))
 
 ### function
