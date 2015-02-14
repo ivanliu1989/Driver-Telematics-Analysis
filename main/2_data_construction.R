@@ -8,7 +8,6 @@ datadirectory <- 'data/drivers/'
 drivers <- sort(as.numeric(list.files(datadirectory)))
 trips <- 1:200
 path <- "data/drivers/"
-main_df <- data.frame()
 
 ### functions ###
 speedDist <- function(trip) {
@@ -19,15 +18,18 @@ speedDist <- function(trip) {
 
 ### main ###
 date(); d_num <- 0
+main_df <- matrix(0, nrow = length(drivers), ncol = 22, dimnames = list(NULL, NULL))
 for (driver in drivers){
-    d_num <- d_num + 1
+    
     for (trip in trips){
+        
+        d_num <- d_num + 1
         sub_df <- data.frame()
         files <- paste0(path, driver, '/', trip, ".csv")
         if (trip==200) {
             print(paste0(files, ' | ' ,date())) 
             }
-        trip_data <- read.csv(files,header = T,stringsAsFactor=F)
+        trip_data <- data.matrix(read.csv(files,header = T,stringsAsFactor=F))
         trip_data <- Kalman_Filter(trip_data,1,1,10) #Q_metres_per_second = 50*1000/3600
         
         # id
@@ -38,16 +40,10 @@ for (driver in drivers){
         feature_speed <- speedDist(trip_data)
         
         # df
-        sub_df <- cbind(driver_trip, t(feature_speed), target)
-        main_df <- rbind(main_df,sub_df)
-    }
-    if(d_num%%100==0){
-        names(main_df) <- c('driver_trip', names(feature_speed), 'target')
-        dim(main_df);head(main_df)
-        save(main_df, file=paste('data/main_df_',d_num,'.RData',sep = ''))
+        main_df[d_num,] <- c(driver_trip, t(feature_speed), target)
     }
 }
-
+main_df <- data.frame(main_df)
 names(main_df) <- c('driver_trip', names(feature_speed), 'target')
 dim(main_df);head(main_df)
 save(main_df, file='data/main_df.RData')
