@@ -1,5 +1,6 @@
 # setwd('/Users/ivan/Work_directory/DTA')
-setwd('H:/Machine_Learning/DTA')
+# setwd('H:/Machine_Learning/DTA')
+setwd('C:/Users/Ivan.Liuyanfeng/Desktop/Data_Mining_Work_Space/DTA')
 rm(list=ls());gc()
 require(data.table);require(zoo);
 source('Driver-Telematics-Analysis/main/kalman_filtering.R')
@@ -18,7 +19,7 @@ speedDist <- function(trip) {
 
 ### main ###
 date(); d_num <- 0
-main_df <- matrix(0, nrow = length(drivers)*200, ncol = 22, dimnames = list(NULL, NULL))
+main_df <- matrix(0, nrow = length(drivers)*200, ncol = 23, dimnames = list(NULL, NULL))
 for (driver in drivers){
     
     for (trip in trips){
@@ -36,7 +37,7 @@ for (driver in drivers){
         main_df[d_num,] <- c(driver, trip, t(feature_speed), target)
         
         if (trip==200) {
-            print(paste0(files, ' | ' ,date())) 
+            cat(paste0(files, ' | ' ,date())) 
         }
     }
 }
