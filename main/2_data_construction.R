@@ -37,7 +37,7 @@ for (driver in drivers){
         main_df[d_num,] <- c(driver, trip, t(feature_speed), target)
         
         if (trip==200) {
-            cat(paste0(files, ' | ' ,date())) 
+            cat(paste0(files, ' | ', date(), ' | ', d_num/(length(drivers)*200))) 
         }
     }
 }
