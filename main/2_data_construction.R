@@ -25,9 +25,8 @@ degree_cal <- function(trip){
 
 ### main ###
 date(); d_num <- 0
-main_df <- matrix(0, nrow = length(drivers)*200, ncol = 89, dimnames = list(NULL, NULL))
+main_df <- matrix(0, nrow = length(drivers)*200, ncol = 90, dimnames = list(NULL, NULL))
 for (driver in drivers){
-    
     for (trip in trips){
         
         d_num <- d_num + 1
@@ -39,6 +38,7 @@ for (driver in drivers){
         target <- 0
         # speed
         dist <- speedDist(trip_data)
+        trip_distance <- sum(dist)
         speed <- dist * 3.6
         feature_speed <- quantile(speed, seq(0.05,1, by = 0.05), na.rm=T)
         # sd_speed
@@ -82,7 +82,7 @@ for (driver in drivers){
         feature_turn <- quantile(turn_point, seq(0.1,1, by = 0.1), na.rm=T)
         
         # df
-        main_df[d_num,] <- c(driver, trip, t(feature_speed), sd_speed, avg_speed, avg_speed_stop, drive_time, standstill_time, avg_acc, avg_dec, 
+        main_df[d_num,] <- c(driver, trip, trip_distance, t(feature_speed), sd_speed, avg_speed, avg_speed_stop, drive_time, standstill_time, avg_acc, avg_dec, 
                              t(feature_acc), t(feature_dec), sd_acc, sd_dec, acc_time, dec_time, cons_time, ex_acc_time, ex_dec_time,
                              ex_turn, turn_point_mean, feature_turn, target)
         
@@ -93,7 +93,7 @@ for (driver in drivers){
 }
 
 main_df <- data.frame(main_df,stringsAsFactors = F)
-names(main_df) <- c('driver', 'trip', paste0('speed_',names(feature_speed)), 'sd_speed', 'avg_speed', 'avg_speed_stop', 'drive_time', 'standstill_time', 'avg_acc', 'avg_dec', 
+names(main_df) <- c('driver', 'trip', 'distance', paste0('speed_',names(feature_speed)), 'sd_speed', 'avg_speed', 'avg_speed_stop', 'drive_time', 'standstill_time', 'avg_acc', 'avg_dec', 
                     paste0('acc_',names(feature_acc)), paste0('dec_',names(feature_dec)), 'sd_acc', 'sd_dec', 'acc_time', 'dec_time', 'cons_time', 'ex_acc_time', 'ex_dec_time', 
                     'ex_turn', 'turn_point_mean', paste0('turn_',names(feature_turn)), 'target')
 dim(main_df);head(main_df)

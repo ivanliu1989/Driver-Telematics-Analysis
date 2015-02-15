@@ -31,6 +31,7 @@ preProcValues <- preProcess(main_df, method = c("center", "scale"))
 main_dfTransformed <- predict(preProcValues, main_df)
 
 ### main process
+#Recursive Partitioning and Regression Trees
 set.seed(888)
 nrOfDriversToCompare <- 5
 submission <- data.frame()
