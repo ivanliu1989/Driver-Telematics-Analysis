@@ -29,7 +29,6 @@ model <- function(driver) {
 
 ### main loop
 for (driver in drivers){
-    
     result <- model(driver)
     print(paste0('driver: ', driver, ' | ' ,date())) 
     
