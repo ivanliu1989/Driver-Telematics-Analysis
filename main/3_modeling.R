@@ -1,13 +1,14 @@
 setwd('H:/Machine_Learning/DTA')
 rm(list=ls());gc()
 
-load(file='data/main_df.RData')
+load(file='data/main_df_77features.RData')
 head(main_df)
 
 datadirectory <- 'data/drivers/'
 drivers <- sort(as.numeric(list.files(datadirectory)))
 
 ### main process
+set.seed(888)
 nrOfDriversToCompare <- 5
 submission <- data.frame()
 model <- function(driver) {
@@ -19,7 +20,7 @@ model <- function(driver) {
     train <- rbind(currentData, refData)
     
     #model
-    g = glm(as.numeric(target) ~ ., data=train[,-c(1,2)], family = binomial("logit"))
+    g = glm(as.factor(target) ~ ., data=train[,-c(1,2)], family = binomial("logit"))
     p = predict(g, currentData, type = "response")
     
     result <- data.frame(driver_trip=paste0(currentData[,1],'_',currentData[,2],sep=''), prob=p)

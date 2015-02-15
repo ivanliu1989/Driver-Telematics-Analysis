@@ -1,6 +1,6 @@
 # setwd('/Users/ivan/Work_directory/DTA')
-setwd('H:/Machine_Learning/DTA')
-# setwd('C:/Users/Ivan.Liuyanfeng/Desktop/Data_Mining_Work_Space/DTA')
+# setwd('H:/Machine_Learning/DTA')
+setwd('C:/Users/Ivan.Liuyanfeng/Desktop/Data_Mining_Work_Space/DTA')
 rm(list=ls());gc()
 require(data.table);require(zoo);
 source('Driver-Telematics-Analysis/main/kalman_filtering.R')
@@ -70,13 +70,13 @@ for (driver in drivers){
                              t(feature_acc), t(feature_dec), sd_acc, sd_dec, acc_time, dec_time, cons_time, ex_acc_time, ex_dec_time, target)
         
         if (trip==200) {
-            print(paste0(files, ' | ', date(), ' | ', d_num/(length(drivers)*200))) 
+            print(paste0(files, ' | ', date(), ' | ', d_num/(length(drivers)*200)*100)) 
         }
     }
 }
 main_df <- data.frame(main_df,stringsAsFactors = F)
 names(main_df) <- c('driver', 'trip', paste0('speed_',names(feature_speed)), 'sd_speed', 'avg_speed', 'avg_speed_stop', 'drive_time', 'standstill_time', 'avg_acc', 'avg_dec', 
-                    paste0('acc_',names(feature_acc)), paste0('acc_',names(feature_dec)), 'sd_acc', 'sd_dec', 'acc_time', 'dec_time', 'cons_time', 'ex_acc_time', 'ex_dec_time', 'target')
+                    paste0('acc_',names(feature_acc)), paste0('dec_',names(feature_dec)), 'sd_acc', 'sd_dec', 'acc_time', 'dec_time', 'cons_time', 'ex_acc_time', 'ex_dec_time', 'target')
 dim(main_df);head(main_df)
 save(main_df, file='data/main_df_77features.RData')
 write.csv(main_df, file = 'data/main_df_77features.csv', quote = F, row.names = F)
