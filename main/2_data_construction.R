@@ -16,16 +16,21 @@ speedDist <- function(trip) {
     return(dist)
     #quantile(speed, seq(0.05,1, by = 0.05), na.rm=T)
 }
-degree_cal <- function(trip){
-    radian <- atan2(diff(trip[,2]),diff(trip[,1]))
-    degrees <- radian * 180 / pi    
-    turning <- abs(diff(degrees))
-    return(turning)
+degree_cal <- function(polar){
+    degrees <- abs(polar[,2] * 180 / pi)
+    return(degrees)
 }
-
+Cartesian_to_Polar <- function(trip){
+    r <- sqrt(diff(trip[,2])^2 + diff(trip[,1])^2)
+    theta <- atan2(diff(trip[,2]),diff(trip[,1]))
+    trip[-1,1] <- r
+    trip[-1,2] <- theta
+    dimnames(trip) = list(NULL,c("r", "theta")) 
+    return(trip[-1,])
+}
 ### main ###
 date(); d_num <- 0
-main_df <- matrix(0, nrow = length(drivers)*200, ncol = 90, dimnames = list(NULL, NULL))
+main_df <- matrix(0, nrow = length(drivers)*200, ncol = 103, dimnames = list(NULL, NULL))
 for (driver in drivers){
     for (trip in trips){
         
@@ -46,11 +51,11 @@ for (driver in drivers){
         # avg_speed
         avg_speed <- mean(speed, na.rm = T)
         # avg_speed_stop
-        avg_speed_stop <- mean(speed[which(speed >= 1)], na.rm = T)
+        avg_speed_stop <- mean(speed[which(speed >= 0.36)], na.rm = T)
         # drive_time
         drive_time <- nrow(trip_data)
         # standstill_time
-        standstill_time <- length(which(speed < 1))/drive_time
+        standstill_time <- length(which(speed < 0.36))/drive_time
         # acceleration/deceleration
         adceleration <- diff(speed)
         acceleration <- adceleration[which(adceleration>= 0.1)]
@@ -70,33 +75,40 @@ for (driver in drivers){
         cons_time <- length(constant)/length(adceleration)
         ex_acc_time <- length(ex_acc)/length(adceleration)
         ex_dec_time <- length(ex_dec)/length(adceleration)
-        # turning
-        turning <- degree_cal(trip_data)
-        turning[which(turning>180)] <- 360-turning[which(turning>180)]
-        turn_point <- turning[which(turning>=30)]
-        turn_speed <- speed[which(turning>=30)]
-        
+        # circular statistics
+        polar <- Cartesian_to_Polar(trip_data)
+        turning <- degree_cal(polar)
+        turn_point <- turning[which(turning>=45)]
+        turn_speed <- speed[which(turning>=45)]
+        centrifugal_acc <- speed^2/polar[,1]
         # turning speed/radius/turning point/ex_turning/centrifugal acceleration\
-        ex_turn <- length(turn_speed[which(turn_speed>=20)])/length(turn_point)
+        mean_direction <- mean(turning)
+        mean_turn_sp <- mean(turn_speed)
+        sd_circular <- sd(turn_point)
+        ex_turn <- length(turn_speed[which(turn_speed>=20 & turn_point >= 120)])/length(turn_point)
         turn_point_mean <- length(turn_point)/length(turning)
         feature_turn <- quantile(turn_point, seq(0.1,1, by = 0.1), na.rm=T)
-        
+        feature_centrifugal <- quantile(centrifugal_acc, seq(0.1,1, by = 0.1), na.rm=T)
         # df
         main_df[d_num,] <- c(driver, trip, trip_distance, t(feature_speed), sd_speed, avg_speed, avg_speed_stop, drive_time, standstill_time, avg_acc, avg_dec, 
                              t(feature_acc), t(feature_dec), sd_acc, sd_dec, acc_time, dec_time, cons_time, ex_acc_time, ex_dec_time,
-                             ex_turn, turn_point_mean, feature_turn, target)
+                             mean_direction, mean_turn_sp,sd_circular, ex_turn, turn_point_mean, t(feature_turn),t(feature_centrifugal), target)
         
         if (trip==200) {
             print(paste0(files, ' | ', date(), ' | ', d_num/(length(drivers)*200)*100)) 
         }
     }
 }
-
+for (i in 1:103){
+    if(sum(is.na(main_df[,i]))>0){
+        print(i)
+    }   
+}
 main_df <- data.frame(main_df,stringsAsFactors = F)
 names(main_df) <- c('driver', 'trip', 'distance', paste0('speed_',names(feature_speed)), 'sd_speed', 'avg_speed', 'avg_speed_stop', 'drive_time', 'standstill_time', 'avg_acc', 'avg_dec', 
                     paste0('acc_',names(feature_acc)), paste0('dec_',names(feature_dec)), 'sd_acc', 'sd_dec', 'acc_time', 'dec_time', 'cons_time', 'ex_acc_time', 'ex_dec_time', 
-                    'ex_turn', 'turn_point_mean', paste0('turn_',names(feature_turn)), 'target')
+                    'mean_direction','mean_turn_sp','sd_circular', 'ex_turn', 'turn_point_mean', paste0('turn_',names(feature_turn)),paste0('centrifugal_',names(feature_centrifugal)), 'target')
 dim(main_df);head(main_df)
 
-save(main_df, file='data/main_df_89features.RData')
-write.csv(main_df, file = 'data/main_df_89features.csv', quote = F, row.names = F)
+save(main_df, file='data/main_df_103features.RData')
+write.csv(main_df, file = 'data/main_df_103features.csv', quote = F, row.names = F)
