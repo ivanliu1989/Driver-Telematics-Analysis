@@ -24,7 +24,7 @@ classifier <- function(driver, model='gbm', nrOfDriversToCompare=5) {
     
     #model
     g <- train(as.factor(target) ~ ., data = train[,-c(1,2)], method = model,trControl = fitControl, 
-               verbose = T, preProc = c("center", "scale"),tuneLength = 6,metric = "ROC",tuneGrid = gbmGrid)
+               verbose = F, preProc = c("center", "scale"),tuneLength = 6,metric = "ROC",tuneGrid = gbmGrid)
     p <- predict(g, newdata = currentData[,-c(1,2)], type = "prob")
     
     result <- data.frame(driver_trip=paste0(currentData[,1],'_',currentData[,2],sep=''), prob=p$Yes)
