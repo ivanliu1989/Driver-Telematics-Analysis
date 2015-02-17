@@ -54,3 +54,10 @@ gDifference(SpP[2], SpP[3], byid=FALSE, id=NULL, drop_lower_td=FALSE)
 
 gEquals(SpP[2], SpP[3], byid = FALSE, returnDense=TRUE)
 gEqualsExact(SpP[2], SpP[3], tol=0.0, byid = FALSE, returnDense=TRUE)
+
+# maptools (elide-methods elide)
+SpP_2 <- elide(SpP[2], rotate=-180, center=apply(bbox(SpP[2]), 1, mean))
+opar <- par(mfrow=c(1,2))
+plot(SpP[2], axes=TRUE)
+plot(SpP_2, axes=TRUE)
+
