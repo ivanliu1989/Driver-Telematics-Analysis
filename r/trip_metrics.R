@@ -4,62 +4,62 @@ library(data.table)
 library(parallel)
 library(caret)
 
-calcSpeed <- function(trip,nlag=NULL) {
-  dx <- diff(trip$x,lag=nlag,differences=1)
-  dy <- diff(trip$y,lag=nlag,differences=1)
-  speed = sqrt(dx^2 + dy^2)/nlag
-  rtn = c(rep(NA,nlag),speed)
-  return(rtn)
-}
-generateDistribution <- function(x,name) {
-  x_wo_na <- x[!is.na(x)]
-  qdist <- seq(0.05,1, by = 0.05)
-  if (length(x_wo_na)<(2*length(qdist))) {
-    dist <- quantile(x_wo_na, qdist)
-  } else {
-    x_wo_peaks <- x_wo_na[abs(x_wo_na-mean(x_wo_na,na.rm = TRUE)) 
-                          < 5*sd(x_wo_na,na.rm = TRUE)]
-    dist <- quantile(x_wo_peaks, qdist)
-  }
-  names(dist) = paste(name,names(dist),sep='_')
-  names(dist) = gsub("%", "_pcnt", names(dist))
-  return(dist)
-}
-speedDistribution <- function(trip,nlag)
-{
-  speed_fps = calcSpeed(trip,nlag)
-  return(generateDistribution(speed_fps,'speed'))  
-}
-calcTangAccel <- function(trip,nlag=NULL) {
-  dx2 <- diff(trip$x,lag=nlag,differences=2)
-  dy2 <- diff(trip$y,lag=nlag,differences=2)
-  accel_fps2 = 3.28084*sqrt(dx2^2 + dy2^2)/nlag
-  accel_fps2 = c(rep(NA,2*nlag),accel_fps2)
-  return(accel_fps2)
-}
-TangAccelDistribution <- function(trip,nlag)
-{
-  accel_fps2 = calcTangAccel(trip,nlag)
-  return(generateDistribution(accel_fps2,'tang_accel'))  
-}
-calcNormAccel <- function(trip,nlag) {
-  sp <- calcSpeed(trip,nlag)
-  cur <- calcCurvature(trip,nlag)
-  accel_fps2 = sp / cur$radius
-  return(accel_fps2)
-}
-NormAccelDistribution <- function(trip,nlag)
-{
-  accel_fps2 = calcNormAccel(trip,nlag)
-  return(generateDistribution(accel_fps2,'norm_accel'))  
-}
-TotalAccelDistribution <- function(trip,nlag)
-{
-  accel_fps2_tang = calcTangAccel(trip,nlag)
-  accel_fps2_norm = calcNormAccel(trip,nlag)
-  accel_fps2 = accel_fps2_tang + accel_fps2_norm
-  return(generateDistribution(accel_fps2,'total_accel'))  
-}
+# calcSpeed <- function(trip,nlag=NULL) {
+#   dx <- diff(trip$x,lag=nlag,differences=1)
+#   dy <- diff(trip$y,lag=nlag,differences=1)
+#   speed = sqrt(dx^2 + dy^2)/nlag
+#   rtn = c(rep(NA,nlag),speed)
+#   return(rtn)
+# }
+# generateDistribution <- function(x,name) {
+#   x_wo_na <- x[!is.na(x)]
+#   qdist <- seq(0.05,1, by = 0.05)
+#   if (length(x_wo_na)<(2*length(qdist))) {
+#     dist <- quantile(x_wo_na, qdist)
+#   } else {
+#     x_wo_peaks <- x_wo_na[abs(x_wo_na-mean(x_wo_na,na.rm = TRUE)) 
+#                           < 5*sd(x_wo_na,na.rm = TRUE)]
+#     dist <- quantile(x_wo_peaks, qdist)
+#   }
+#   names(dist) = paste(name,names(dist),sep='_')
+#   names(dist) = gsub("%", "_pcnt", names(dist))
+#   return(dist)
+# }
+# speedDistribution <- function(trip,nlag)
+# {
+#   speed_fps = calcSpeed(trip,nlag)
+#   return(generateDistribution(speed_fps,'speed'))  
+# }
+# calcTangAccel <- function(trip,nlag=NULL) {
+#   dx2 <- diff(trip$x,lag=nlag,differences=2)
+#   dy2 <- diff(trip$y,lag=nlag,differences=2)
+#   accel_fps2 = 3.28084*sqrt(dx2^2 + dy2^2)/nlag
+#   accel_fps2 = c(rep(NA,2*nlag),accel_fps2)
+#   return(accel_fps2)
+# }
+# TangAccelDistribution <- function(trip,nlag)
+# {
+#   accel_fps2 = calcTangAccel(trip,nlag)
+#   return(generateDistribution(accel_fps2,'tang_accel'))  
+# }
+# calcNormAccel <- function(trip,nlag) {
+#   sp <- calcSpeed(trip,nlag)
+#   cur <- calcCurvature(trip,nlag)
+#   accel_fps2 = sp / cur$radius
+#   return(accel_fps2)
+# }
+# NormAccelDistribution <- function(trip,nlag)
+# {
+#   accel_fps2 = calcNormAccel(trip,nlag)
+#   return(generateDistribution(accel_fps2,'norm_accel'))  
+# }
+# TotalAccelDistribution <- function(trip,nlag)
+# {
+#   accel_fps2_tang = calcTangAccel(trip,nlag)
+#   accel_fps2_norm = calcNormAccel(trip,nlag)
+#   accel_fps2 = accel_fps2_tang + accel_fps2_norm
+#   return(generateDistribution(accel_fps2,'total_accel'))  
+# }
 calcCurvature <- function(trip,nlag) {
   # kt = (d2y/dt2) / (1+(dy/dt)^2)^(3/2)
   #
@@ -113,17 +113,17 @@ curvatureDistribution <- function(trip,nlag)
   )
   return(rtn)  
 }
-distance <- function(trip,nlag=NULL)
-{
-  # kt = (d2y/dt2) / (1+(dy/dt)^2)^(3/2)
-  dx <- diff(trip$x,lag=nlag,differences=1)
-  dy <- diff(trip$y,lag=nlag,differences=1)
-  delta_dist <- sqrt(dx^2 + dy^2)
-  dist = sum(delta_dist)
-  names(dist) = paste('distance')
-  return(dist)
-}
-
+# distance <- function(trip,nlag=NULL)
+# {
+#   # kt = (d2y/dt2) / (1+(dy/dt)^2)^(3/2)
+#   dx <- diff(trip$x,lag=nlag,differences=1)
+#   dy <- diff(trip$y,lag=nlag,differences=1)
+#   delta_dist <- sqrt(dx^2 + dy^2)
+#   dist = sum(delta_dist)
+#   names(dist) = paste('distance')
+#   return(dist)
+# }
+########################################################################################################################
 tripFeatures<-function(trip,target,nlag) {
   sd <- speedDistribution(trip,nlag)
   at <- TangAccelDistribution(trip,nlag)

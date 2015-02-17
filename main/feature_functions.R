@@ -1,0 +1,108 @@
+library(data.table);library(plotrix);library(data.table);library(parallel);library(caret)
+
+files <- "data/drivers/1/1.csv"
+trip_data <- data.matrix(read.csv(files,header = T,stringsAsFactor=F))
+
+# Total Distance
+distance <- function(trip,nlag=1){
+    dx <- diff(trip[,1],lag=nlag,differences=1)
+    dy <- diff(trip[,2],lag=nlag,differences=1)
+    delta_dist <- sqrt(dx^2 + dy^2)
+    dist = sum(delta_dist)
+    return(dist)
+}
+
+# Speed
+calcSpeed <- function(trip,nlag=1) {
+    dx <- diff(trip[,1],lag=nlag,differences=1)
+    dy <- diff(trip[,2],lag=nlag,differences=1)
+    speed = sqrt(dx^2 + dy^2)/nlag
+    rtn = c(rep(NA,nlag),speed)
+    return(rtn)
+}
+
+# Distribution
+generateDistribution <- function(x,name) {
+    x_wo_na <- x[!is.na(x)]
+    qdist <- seq(0.05,1, by = 0.05)
+    if (length(x_wo_na)<(2*length(qdist))) {
+        dist <- quantile(x_wo_na, qdist)
+    } else {
+        x_wo_peaks <- x_wo_na[abs(x_wo_na-mean(x_wo_na,na.rm = TRUE)) 
+                              < 5*sd(x_wo_na,na.rm = TRUE)]
+        dist <- quantile(x_wo_peaks, qdist)
+    }
+    names(dist) = paste(name,names(dist),sep='_')
+    names(dist) = gsub("%", "_pct", names(dist))
+    return(dist)
+}
+
+# Tangential acceleration
+calcTangAccel <- function(trip,nlag=1) {
+    dx2 <- diff(trip[,1],lag=nlag,differences=2)
+    dy2 <- diff(trip[,2],lag=nlag,differences=2)
+    accel_fps2 = 3.28084*sqrt(dx2^2 + dy2^2)/nlag
+    accel_fps2 = c(rep(NA,2*nlag),accel_fps2)
+    return(accel_fps2)
+}
+
+# Normal acceleration
+calcNormAccel <- function(sp,cur,nlag) {
+    accel_fps2 = sp / cur$radius
+    return(accel_fps2)
+}
+
+# Total acceleration
+TotalAccelDistribution <- function(accel_fps2_tang,accel_fps2_norm){
+    accel_fps2 = accel_fps2_tang + accel_fps2_norm
+    return(generateDistribution(accel_fps2,'total_accel'))  
+}
+
+# Curvature
+calcCurvature <- function(trip,nlag) {
+    ib=seq(2,nrow(trip)-1)
+    ia=ib-1
+    ic=ib+1
+    A_x = trip$x[ia]
+    B_x = trip$x[ib]
+    C_x = trip$x[ic]
+    A_y = trip$y[ia]
+    B_y = trip$y[ib]
+    C_y = trip$y[ic]
+    D = 2 * (A_x*(B_y - C_y) + B_x*(C_y - A_y) + C_x*(A_y - B_y) )
+    U_x = ((A_x^2 + A_y^2) * (B_y - C_y) + (B_x^2 + B_y^2) * (C_y - A_y) + (C_x^2 + C_y^2) * (A_y - B_y)) / D
+    U_y = ((A_x^2 + A_y^2) * (C_x - B_x) + (B_x^2 + B_y^2) * (A_x - C_x) + (C_x^2 + C_y^2) * (B_x - A_x)) / D
+    R = sqrt((A_x - U_x)^2 + (A_y - U_y)^2)
+    #   cur <- data.table(center_x = c(NA, U_x, NA),
+    #                     center_y = c(NA, U_y, NA),
+    #                     radius = c(NA, R, NA))
+    mlag <- nlag
+    if (nlag %% 2 == 0) {
+        mlag <- nlag + 1
+    }
+    f21 <- rep(1/mlag,mlag)
+    smth_x <- filter(U_x, f21, sides=2)
+    smth_y <- filter(U_y, f21, sides=2)
+    smth_R <- filter(R, f21, sides=2)
+    cur_smooth <- data.table(center_x = c(NA, smth_x, NA),
+                             center_y = c(NA, smth_y, NA),
+                             radius = c(NA, smth_R, NA))
+    return(cur_smooth)
+}
+
+# Cartesian to Polar coordinates
+Cartesian_to_Polar <- function(trip){
+    r <- sqrt(diff(trip[,2])^2 + diff(trip[,1])^2)
+    theta <- atan2(diff(trip[,2]),diff(trip[,1]))
+    trip[-1,1] <- r
+    trip[-1,2] <- theta
+    dimnames(trip) = list(NULL,c("r", "theta")) 
+    return(trip[-1,])
+}
+
+# Heading degree
+degree_cal <- function(polar){
+    degrees <- abs(polar[,2] * 180 / pi)
+    return(degrees)
+}
+
