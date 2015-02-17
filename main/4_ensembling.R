@@ -11,7 +11,7 @@ rf <- data.frame(fread('submission_rf.csv',header = T, stringsAsFactor = F))
 
 head(svm);head(gbm);head(nb);head(rf)
 
-ensem_prob <- (svm[,2] + gbm[,2] + nb[,2] + rf[,2])/4
+ensem_prob <- (svm[,2] + gbm[,2]  + rf[,2])/3
 ensem_prob <- 4/(1/svm[,2] + 1/gbm[,2] + 1/nb[,2] + 1/rf[,2])
 
 ensemble <- data.frame(driver_trip=svm[,1], prob=ensem_prob)

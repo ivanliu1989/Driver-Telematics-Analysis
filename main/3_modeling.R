@@ -4,7 +4,7 @@ rm(list=ls());gc()
 require(caret);require(data.table)
 
 # main_df <- data.frame(fread('data/main_df_103features.csv',header = T, stringsAsFactor = F))
-# load(file='data/main_df_89features.RData')
+# load(file='data/main_df_103features.RData')
 head(main_df)
 datadirectory <- 'data/drivers/'
 drivers <- sort(as.numeric(list.files(datadirectory)))
@@ -24,9 +24,9 @@ classifier <- function(driver, model='gbm', nrOfDriversToCompare=5, features) {
     train <- rbind(currentData, refData)
     
     #model
-    g <- train(as.factor(target) ~ ., data = train[,c(features,'target')], method = model,trControl = fitControl, 
-               verbose = T, preProc = c("center", "scale"),tuneLength = 6,metric = "ROC",tuneGrid = gbmGrid)
-    p <- predict(g, newdata = currentData[,-c(1,2)], type = "prob")
+    system.time(g <- train(x = data.matrix(train[,c(rfe_var)]), y = as.factor(train$target), method = model,trControl = fitControl, 
+               verbose = F, preProc = c("center", "scale"),tuneLength = 6,metric = "ROC",tuneGrid = gbmGrid))
+    p <- predict(g, newdata = data.matrix(currentData[,c(rfe_var)]), type = "prob")
     
     result <- data.frame(driver_trip=paste0(currentData[,1],'_',currentData[,2],sep=''), prob=p$Yes)
     return(result)
@@ -41,9 +41,6 @@ load('Driver-Telematics-Analysis/feature_selection/rfe_var.RData')
 set.seed(888)
 fitControl <- trainControl(method = "none",number = 10,repeats = 3,classProbs = TRUE,
                            summaryFunction = twoClassSummary,adaptive = list(min = 4,alpha = 0.05,method = "BT",complete = TRUE))
-gbmGrid <-  expand.grid(interaction.depth = c(1,3,9),
-                        n.trees = c(50,100,150,250),
-                        shrinkage = c(0.05,0.1))
 gbmGrid <-  expand.grid(mtry = 18)
 submission <- data.frame()
 
