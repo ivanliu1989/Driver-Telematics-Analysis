@@ -24,9 +24,9 @@ classifier <- function(driver, model='gbm', nrOfDriversToCompare=5, features) {
     train <- rbind(currentData, refData)
     
     #model
-    system.time(g <- train(x = data.matrix(train[,c(rfe_var)]), y = as.factor(train$target), method = model,trControl = fitControl, 
+    system.time(g <- train(x = data.matrix(train[,c(features)]), y = as.factor(train$target), method = model,trControl = fitControl, 
                verbose = F, preProc = c("center", "scale"),tuneLength = 6,metric = "ROC",tuneGrid = gbmGrid))
-    p <- predict(g, newdata = data.matrix(currentData[,c(rfe_var)]), type = "prob")
+    p <- predict(g, newdata = data.matrix(currentData[,c(features)]), type = "prob")
     
     result <- data.frame(driver_trip=paste0(currentData[,1],'_',currentData[,2],sep=''), prob=p$Yes)
     return(result)
@@ -72,11 +72,11 @@ gbmGrid <-  expand.grid(interaction.depth = 2,
 submission <- data.frame()
 
 for (driver in drivers){
-    result <- classifier(driver,'gbm',5,rfe_var)
+    result <- classifier(driver,'rf',5,rfe_var)
     print(paste0('driver: ', driver, ' | ' ,date())) 
     
     submission <- rbind(submission, result)
 }
 
-write.csv(submission, file = 'submission_gbm_retrain.csv', quote = F, row.names = F)
+write.csv(submission, file = 'submission_gbm_rf_feature.csv', quote = F, row.names = F)
 sum(is.na(submission))
