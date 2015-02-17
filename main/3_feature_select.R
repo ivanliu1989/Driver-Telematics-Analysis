@@ -6,9 +6,10 @@ head(main_df)
 datadirectory <- 'data/drivers/'
 drivers <- sort(as.numeric(list.files(datadirectory)))
 driver <- 1
-model <- 'gbm'
+model <- 'rf'
 
 #model sbf_var rfe_var
+load('Driver-Telematics-Analysis/feature_selection/rfe_var.RData')
 fitControl <- trainControl(method = "adaptive_cv",number = 10,repeats = 5,classProbs = TRUE,
                            summaryFunction = twoClassSummary,adaptive = list(min = 12,alpha = 0.05,method = "BT",complete = TRUE))
 
@@ -19,8 +20,8 @@ refData <-  main_df[main_df[,1] %in% test_num,]
 refData$target <- 'No'
 train <- rbind(currentData, refData)
 
-g <- train(as.factor(target) ~ ., data = train[,-c(1,2)], method = model,trControl = fitControl, 
-           verbose = T, preProc = c("center", "scale"),metric = "ROC")
+g <- train(as.factor(target) ~ ., data = train[,c(rfe_var,'target')], method = model,trControl = fitControl, 
+           verbose = T, preProc = c("center", "scale"),metric = "ROC",tuneLength=12)
 p <- predict(g, newdata = currentData[,-c(1,2)], type = "prob")
 
 

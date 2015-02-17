@@ -14,7 +14,7 @@ drivers <- sort(as.numeric(list.files(datadirectory)))
 ##################
 #Recursive Partitioning and Regression Trees 
 #svmLinear() | gbm(ntree150,inter4) | rf(mtry17) | glm | nb(LF0,kernel=T) | nnet(size1,decay0.1) | RFlda()
-classifier <- function(driver, model='gbm', nrOfDriversToCompare=5) {
+classifier <- function(driver, model='gbm', nrOfDriversToCompare=5, features) {
     currentData <- main_df[main_df[,1]==driver,]
     currentData$target <- 'Yes'
     
@@ -24,7 +24,7 @@ classifier <- function(driver, model='gbm', nrOfDriversToCompare=5) {
     train <- rbind(currentData, refData)
     
     #model
-    g <- train(as.factor(target) ~ ., data = train[,-c(1,2)], method = model,trControl = fitControl, 
+    g <- train(as.factor(target) ~ ., data = train[,c(features,'target')], method = model,trControl = fitControl, 
                verbose = T, preProc = c("center", "scale"),tuneLength = 6,metric = "ROC",tuneGrid = gbmGrid)
     p <- predict(g, newdata = currentData[,-c(1,2)], type = "prob")
     
@@ -37,6 +37,7 @@ classifier <- function(driver, model='gbm', nrOfDriversToCompare=5) {
 #################
 library(doMC)
 registerDoMC(cores = 2)
+load('Driver-Telematics-Analysis/feature_selection/rfe_var.RData')
 set.seed(888)
 fitControl <- trainControl(method = "none",number = 10,repeats = 3,classProbs = TRUE,
                            summaryFunction = twoClassSummary,adaptive = list(min = 4,alpha = 0.05,method = "BT",complete = TRUE))
@@ -47,7 +48,7 @@ gbmGrid <-  expand.grid(mtry = 18)
 submission <- data.frame()
 
 for (driver in drivers){
-    result <- classifier(driver,'rf',5)
+    result <- classifier(driver,'rf',5,rfe_var)
     print(paste0('driver: ', driver, ' | ' ,date())) 
     
     submission <- rbind(submission, result)
