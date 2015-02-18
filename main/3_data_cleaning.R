@@ -21,6 +21,7 @@ for (col in 1:length(colnames(main_df))){
         main_df[which(is.na(main_df[,col])), col] <- 0
     }
 }
+colnames(main_df[,null_col])
 # a <- main_df[which(is.na(main_df[,null_col[1]])),]
 
 ##########################
