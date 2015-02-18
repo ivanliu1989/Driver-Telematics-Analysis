@@ -23,8 +23,8 @@ for (i in trip){
     cur <- calcCurvature(trip_data,1)
     speed <- calcSpeed(trip_data)
     
-    a <- speed[-3,][which(cur[,3]<=100),]
-    plot(a)
+    plot(speed)
+    points(speed[which(cur[,3]<=100)],col='red')
     #lines(a,type = 'o',col='red')    
     
 }

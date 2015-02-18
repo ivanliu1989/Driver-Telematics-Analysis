@@ -49,6 +49,7 @@ for (driver in drivers){
         feature_curvature <- curvatureDistribution(cur)
         sd_tanAcc <- sd(tanAcc,na.rm = T)
         sd_norAcc <- sd(norAcc,na.rm = T)
+        sd_cur <- sd(cur[which(cur[,3]<=100),3],na.rm = T)
         
         # acceleration/deceleration
         adceleration <- diff(speed) 
@@ -72,57 +73,17 @@ for (driver in drivers){
         ex_dec_time <- length(ex_dec)/length(adceleration)
         
         # circular statistics
-        polar <- Cartesian_to_Polar(trip_data,1)
-        turning <- degree_cal(polar)
-        turn_point <- turning[which(turning>=80)]
-        #speed_all <- calcSpeed(trip_data,1)
-        turn_speed <- speed[which(turning>=80)]
-        centrifugal_acc <- speed[-c(1:1)]^2/polar[,1]
-        adc_turn <- adceleration[which(turning>=80)]
-        adc_straight <- adceleration[which(turning<80)]
-        
-        dec_turn <- adc_turn[which(adc_turn<= -0.1)]
-        dec_straight <- adc_straight[which(adc_straight<= -0.1)]
-        acc_turn <- adc_turn[which(adc_turn>= 0.1)]
-        acc_straight <- adc_straight[which(adc_straight>= 0.1)]
+#         turn_point <- trip_data[which(cur[,3]<=100),]
+        turn_speed <- speed[which(cur[,3]<=100)]
         
         # turning speed/radius/turning point/ex_turning/centrifugal acceleration\
-        mean_direction <- mean(turning,na.rm = T)
-        #mean_turn_sp <- mean(turn_speed,na.rm = T)
-        sd_circular <- sd(turn_point,na.rm = T)
-        ex_turn <- length(turn_speed[which(turn_speed>=20 & turn_point >= 120)])/length(turn_point)
-        turn_point_mean <- length(turn_point)/length(turning)
-        feature_turn <- generateDistribution(turn_point, 'turn')
-        feature_centrifugal <- generateDistribution(centrifugal_acc, 'centAcc')
+        ex_turn <- length(which(turn_speed>=20))/length(which(cur[,3]<=100))
+        turn_point_mean <- length(which(cur[,3]<=100))/length(cur[,3])
+        feature_turn_sp <- generateDistribution(turn_speed,'turn_sp')
         
-        sd_acc_turn <- sd(acc_turn, na.rm = T)
-        sd_acc_straight <- sd(acc_straight, na.rm = T)
-        sd_dec_turn <- sd(dec_turn, na.rm = T)
-        sd_dec_straight <- sd(dec_straight, na.rm = T)
-        
-        avg_acc_turn <- mean(acc_turn, na.rm = T)
-        avg_acc_straight <- mean(acc_straight, na.rm = T)
-        avg_dec_turn <- mean(dec_turn, na.rm = T)
-        avg_dec_straight <- mean(dec_straight, na.rm = T)
-        
-        max_acc_turn <- max(acc_turn, na.rm = T)
-        max_acc_straight <- max(acc_straight, na.rm = T)
-        max_dec_turn <- max(dec_turn, na.rm = T)
-        max_dec_straight <- max(dec_straight, na.rm = T)
-        
-        min_acc_turn <- min(acc_turn, na.rm = T)
-        min_acc_straight <- min(acc_straight, na.rm = T)
-        min_dec_turn <- min(dec_turn, na.rm = T)
-        min_dec_straight <- min(dec_straight, na.rm = T)
         
         # df
-        main_df[d_num,] <- c(driver,trip,trip_distance,t(feature_speed),sd_speed,avg_speed,standstill_time,t(feature_tanAcc),t(feature_norAcc),
-                             t(feature_totAcc),t(feature_curvature),sd_tanAcc,sd_norAcc,avg_acc,avg_dec,t(feature_acc),t(feature_dec),
-                             sd_acc,sd_dec,acc_time,dec_time,cons_time,ex_acc_time,ex_dec_time,
-                             mean_direction, sd_circular, ex_turn, turn_point_mean, t(feature_turn), t(feature_centrifugal), 
-                             sd_acc_turn,sd_acc_straight,sd_dec_turn,sd_dec_straight,avg_acc_turn,avg_acc_straight,avg_dec_turn,avg_dec_straight,
-                             max_acc_turn,max_acc_straight,max_dec_turn,max_dec_straight,min_acc_turn,min_acc_straight,min_dec_turn,min_dec_straight
-                             ,target)
+        main_df[d_num,] <- c(driver,trip,trip_distance,feature_speed,sd_speed,avg_speed,drive_time,standstill_time,target)
         
         if (trip==200) {
             print(paste0(files, ' | ', date(), ' | ', d_num/(length(drivers)*200)*100)) 
