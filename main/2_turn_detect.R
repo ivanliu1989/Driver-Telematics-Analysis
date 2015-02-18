@@ -31,11 +31,9 @@ for (i in trip){
 # }
 
 par(mfcol=c(1,1))
-speed_o <- rm.outlier(speed, fill = T, median = T, opposite = FALSE)
-out <- outlier(speed)
+speed_o <- removeOutliers(speed,250,3)
 plot(speed)
 lines(speed_o,col='red')
-points(out,col='blue')
 
 # driver trip
 # 83       1   83

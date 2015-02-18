@@ -26,7 +26,7 @@ for (driver in drivers){
         target <- 0
         # speed
         trip_distance <- distance(trip_data)
-        speed <- calcSpeed(trip_data)
+        speed <- removeOutliers(calcSpeed(trip_data),250,3)
         feature_speed <- generateDistribution(speed, 'speed')
         # sd_speed
         sd_speed <- sd(speed, na.rm=T)
