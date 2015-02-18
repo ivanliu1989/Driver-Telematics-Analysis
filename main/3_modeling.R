@@ -22,8 +22,8 @@ classifier <- function(driver, model='gbm', nrOfDriversToCompare=5, features) {
     train <- rbind(currentData, refData)
     
     #model
-    system.time(g <- train(x = data.matrix(train[,c(features)]), y = as.factor(train$target), method = model,trControl = fitControl, 
-               verbose = F, preProc = c("center", "scale"),tuneLength = 6,metric = "ROC",tuneGrid = gbmGrid))
+    g <- train(x = data.matrix(train[,c(features)]), y = as.factor(train$target), method = model,trControl = fitControl, 
+               verbose = F, preProc = c("center", "scale"),tuneLength = 6,metric = "ROC",tuneGrid = gbmGrid)
     p <- predict(g, newdata = data.matrix(currentData[,c(features)]), type = "prob")
     
     result <- data.frame(driver_trip=paste0(currentData[,1],'_',currentData[,2],sep=''), prob=p$Yes)
@@ -46,7 +46,7 @@ feature_list <- colnames(main_df)[-c(1,2,218)]
 submission <- data.frame()
 
 for (driver in drivers){
-    result <- classifier(driver,'rf',5,feature_list)
+    result <- classifier(driver,'gbm',5,feature_list)
     print(paste0('driver: ', driver, ' | ' ,date())) 
     
     submission <- rbind(submission, result)
