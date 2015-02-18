@@ -129,7 +129,7 @@ for (driver in drivers){
         }
     }
 }
-for (i in 1:103){
+for (i in 1:218){
     if(sum(is.na(main_df[,i]))>0){
         print(i)
     }   

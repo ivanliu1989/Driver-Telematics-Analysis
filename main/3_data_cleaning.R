@@ -4,8 +4,8 @@ setwd('C:/Users/Ivan.Liuyanfeng/Desktop/Data_Mining_Work_Space/DTA')
 rm(list=ls());gc()
 require(caret);require(data.table)
 
-# main_df <- data.frame(fread('data/main_df_103features.csv',header = T, stringsAsFactor = F))
-load(file='data/main_df_103features.RData')
+# main_df <- data.frame(fread('data/main_df_218features.csv',header = T, stringsAsFactor = F))
+load(file='data/main_df_218features.RData')
 head(main_df)
 datadirectory <- 'data/drivers/'
 drivers <- sort(as.numeric(list.files(datadirectory)))
@@ -33,18 +33,18 @@ nzv[nzv$nzv,][1:10,]
 #########################################
 ### Identifying Correlated Predictors ###
 #########################################
-descrCor <- cor(main_df[,-c(1,2,103)])
+descrCor <- cor(main_df[,-c(1,2,218)])
 summary(descrCor[upper.tri(descrCor)])
 
 highlyCorDescr <- findCorrelation(descrCor, cutoff = .99)
-highlyCorName <- colnames(main_df[,-c(1,2,103)][,highlyCorDescr])
+highlyCorName <- colnames(main_df[,-c(1,2,218)][,highlyCorDescr])
 head(main_df[,highlyCorName])
 main_df <- main_df[,-which(colnames(main_df) %in% highlyCorName)]
 
 ###########################
 ### Linear Dependencies ###
 ###########################
-comboInfo <- findLinearCombos(main_df[,-c(1,2,80)])
+comboInfo <- findLinearCombos(main_df[,-c(1,2,218)])
 comboInfo
 main_df[, -comboInfo$remove]
 
