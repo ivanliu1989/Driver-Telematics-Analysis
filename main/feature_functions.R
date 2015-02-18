@@ -88,7 +88,7 @@ calcCurvature <- function(trip,nlag) {
 }
 
 # Curvature Distribution
-curvatureDistribution <- function(cur,nlag){
+curvatureDistribution <- function(cur){
     radius = cur[,3]
     values <- radius[is.finite(radius)]
     tryCatch(rtn<-generateDistribution(values,'cur'), 
@@ -102,13 +102,13 @@ curvatureDistribution <- function(cur,nlag){
 }
 
 # Cartesian to Polar coordinates
-Cartesian_to_Polar <- function(trip){
-    r <- sqrt(diff(trip[,2])^2 + diff(trip[,1])^2)
-    theta <- atan2(diff(trip[,2]),diff(trip[,1]))
-    trip[-1,1] <- r
-    trip[-1,2] <- theta
-    dimnames(trip) = list(NULL,c("r", "theta")) 
-    return(trip[-1,])
+Cartesian_to_Polar <- function(trip,nlag){
+    r <- sqrt(diff(trip[,2],lag=nlag)^2 + diff(trip[,1],lag=nlag)^2)
+    theta <- atan2(diff(trip[,2],lag=nlag),diff(trip[,1],lag=nlag))
+    Polar <- matrix(0, nrow = length(theta), ncol = 2, dimnames = list(NULL, c("r", "theta")))
+    Polar[,1] <- r
+    Polar[,2] <- theta
+    return(Polar)
 }
 
 # Heading degree
