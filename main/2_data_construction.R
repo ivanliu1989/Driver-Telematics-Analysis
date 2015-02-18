@@ -13,7 +13,7 @@ path <- "data/drivers/"
 
 ### main ###
 date(); d_num <- 0
-main_df <- matrix(0, nrow = length(drivers)*200, ncol = 218, dimnames = list(NULL, NULL))
+main_df <- matrix(0, nrow = length(drivers)*200, ncol = 182, dimnames = list(NULL, NULL))
 for (driver in drivers){
     for (trip in trips){
         
@@ -83,7 +83,10 @@ for (driver in drivers){
         
         
         # df
-        main_df[d_num,] <- c(driver,trip,trip_distance,feature_speed,sd_speed,avg_speed,drive_time,standstill_time,target)
+        main_df[d_num,] <- c(driver,trip,trip_distance,t(feature_speed),sd_speed,avg_speed,drive_time,standstill_time,
+                             t(feature_tanAcc),t(feature_norAcc),t(feature_totAcc),t(feature_curvature),sd_tanAcc,sd_norAcc,sd_cur,
+                             avg_acc,avg_dec,t(feature_acc),t(feature_dec),sd_acc,sd_dec,acc_time,dec_time,cons_time,ex_acc_time,ex_dec_time,
+                             ex_turn,turn_point_mean,t(feature_turn_sp),target)
         
         if (trip==200) {
             print(paste0(files, ' | ', date(), ' | ', d_num/(length(drivers)*200)*100)) 
@@ -96,13 +99,10 @@ for (i in 1:218){
     }   
 }
 main_df <- data.frame(main_df,stringsAsFactors = F)
-names(main_df) <- c('driver','trip','trip_distance',names(feature_speed),'sd_speed','avg_speed','standstill_time',names(feature_tanAcc),names(feature_norAcc),
-                    names(feature_totAcc),names(feature_curvature),'sd_tanAcc','sd_norAcc','avg_acc','avg_dec',names(feature_acc),names(feature_dec),
-                    'sd_acc','sd_dec','acc_time','dec_time','cons_time','ex_acc_time','ex_dec_time',
-                    'mean_direction', 'sd_circular', 'ex_turn', 'turn_point_mean', names(feature_turn), names(feature_centrifugal), 
-                    'sd_acc_turn','sd_acc_straight','sd_dec_turn','sd_dec_straight','avg_acc_turn','avg_acc_straight','avg_dec_turn','avg_dec_straight',
-                    'max_acc_turn','max_acc_straight','max_dec_turn','max_dec_straight','min_acc_turn','min_acc_straight','min_dec_turn','min_dec_straight'
-                    ,'target')
+names(main_df) <- c('driver','trip','trip_distance',names(feature_speed),'sd_speed','avg_speed','drive_time','standstill_time',
+                    names(feature_tanAcc),names(feature_norAcc),names(feature_totAcc),names(feature_curvature),'sd_tanAcc','sd_norAcc','sd_cur',
+                    'avg_acc','avg_dec',names(feature_acc),names(feature_dec),'sd_acc','sd_dec','acc_time','dec_time','cons_time','ex_acc_time','ex_dec_time',
+                    'ex_turn','turn_point_mean',names(feature_turn_sp),'target')
 dim(main_df);head(main_df)
 
 save(main_df, file='data/main_df_218features.RData')
