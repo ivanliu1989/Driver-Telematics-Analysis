@@ -60,59 +60,59 @@ library(caret)
 #   accel_fps2 = accel_fps2_tang + accel_fps2_norm
 #   return(generateDistribution(accel_fps2,'total_accel'))  
 # }
-calcCurvature <- function(trip,nlag) {
-  # kt = (d2y/dt2) / (1+(dy/dt)^2)^(3/2)
-  #
-  # ===Cartesian coordinates====
-  # ref: http://en.wikipedia.org/wiki/Circumscribed_circle#Cartesian_coordinates
-  # The [[Cartesian coordinates]] of the circumcenter are 
-  # U_x = [(A_x^2 + A_y^2)(B_y - C_y) + (B_x^2 + B_y^2)(C_y - A_y) + (C_x^2 + C_y^2)(A_y - B_y)] / D
-  # U_y = [(A_x^2 + A_y^2)(C_x - B_x) + (B_x^2 + B_y^2)(A_x - C_x) + (C_x^2 + C_y^2)(B_x - A_x)]/ D
-  # with  
-  # D = 2 [A_x(B_y - C_y) + B_x(C_y - A_y) + C_x(A_y - B_y) ]
-  ib=seq(2,nrow(trip)-1)
-  ia=ib-1
-  ic=ib+1
-  A_x = trip$x[ia]
-  B_x = trip$x[ib]
-  C_x = trip$x[ic]
-  A_y = trip$y[ia]
-  B_y = trip$y[ib]
-  C_y = trip$y[ic]
-  D = 2 * (A_x*(B_y - C_y) + B_x*(C_y - A_y) + C_x*(A_y - B_y) )
-  U_x = ((A_x^2 + A_y^2) * (B_y - C_y) + (B_x^2 + B_y^2) * (C_y - A_y) + (C_x^2 + C_y^2) * (A_y - B_y)) / D
-  U_y = ((A_x^2 + A_y^2) * (C_x - B_x) + (B_x^2 + B_y^2) * (A_x - C_x) + (C_x^2 + C_y^2) * (B_x - A_x)) / D
-  R = sqrt((A_x - U_x)^2 + (A_y - U_y)^2)
-  #   cur <- data.table(center_x = c(NA, U_x, NA),
-  #                     center_y = c(NA, U_y, NA),
-  #                     radius = c(NA, R, NA))
-  mlag <- nlag
-  if (nlag %% 2 == 0) {
-    mlag <- nlag + 1
-  }
-  f21 <- rep(1/mlag,mlag)
-  smth_x <- filter(U_x, f21, sides=2)
-  smth_y <- filter(U_y, f21, sides=2)
-  smth_R <- filter(R, f21, sides=2)
-  cur_smooth <- data.table(center_x = c(NA, smth_x, NA),
-                           center_y = c(NA, smth_y, NA),
-                           radius = c(NA, smth_R, NA))
-  return(cur_smooth)
-}
-curvatureDistribution <- function(trip,nlag)
-{
-  cur = calcCurvature(trip,nlag)
-  radius = cur$radius
-  values <- radius[is.finite(radius)]
-  tryCatch(rtn<-generateDistribution(values,'cur'), 
-           error = function(e) {
-             e
-             generateDistribution(values,'cur')
-             rtn<-NULL
-           }
-  )
-  return(rtn)  
-}
+# calcCurvature <- function(trip,nlag) {
+#   # kt = (d2y/dt2) / (1+(dy/dt)^2)^(3/2)
+#   #
+#   # ===Cartesian coordinates====
+#   # ref: http://en.wikipedia.org/wiki/Circumscribed_circle#Cartesian_coordinates
+#   # The [[Cartesian coordinates]] of the circumcenter are 
+#   # U_x = [(A_x^2 + A_y^2)(B_y - C_y) + (B_x^2 + B_y^2)(C_y - A_y) + (C_x^2 + C_y^2)(A_y - B_y)] / D
+#   # U_y = [(A_x^2 + A_y^2)(C_x - B_x) + (B_x^2 + B_y^2)(A_x - C_x) + (C_x^2 + C_y^2)(B_x - A_x)]/ D
+#   # with  
+#   # D = 2 [A_x(B_y - C_y) + B_x(C_y - A_y) + C_x(A_y - B_y) ]
+#   ib=seq(2,nrow(trip)-1)
+#   ia=ib-1
+#   ic=ib+1
+#   A_x = trip$x[ia]
+#   B_x = trip$x[ib]
+#   C_x = trip$x[ic]
+#   A_y = trip$y[ia]
+#   B_y = trip$y[ib]
+#   C_y = trip$y[ic]
+#   D = 2 * (A_x*(B_y - C_y) + B_x*(C_y - A_y) + C_x*(A_y - B_y) )
+#   U_x = ((A_x^2 + A_y^2) * (B_y - C_y) + (B_x^2 + B_y^2) * (C_y - A_y) + (C_x^2 + C_y^2) * (A_y - B_y)) / D
+#   U_y = ((A_x^2 + A_y^2) * (C_x - B_x) + (B_x^2 + B_y^2) * (A_x - C_x) + (C_x^2 + C_y^2) * (B_x - A_x)) / D
+#   R = sqrt((A_x - U_x)^2 + (A_y - U_y)^2)
+#   #   cur <- data.table(center_x = c(NA, U_x, NA),
+#   #                     center_y = c(NA, U_y, NA),
+#   #                     radius = c(NA, R, NA))
+#   mlag <- nlag
+#   if (nlag %% 2 == 0) {
+#     mlag <- nlag + 1
+#   }
+#   f21 <- rep(1/mlag,mlag)
+#   smth_x <- filter(U_x, f21, sides=2)
+#   smth_y <- filter(U_y, f21, sides=2)
+#   smth_R <- filter(R, f21, sides=2)
+#   cur_smooth <- data.table(center_x = c(NA, smth_x, NA),
+#                            center_y = c(NA, smth_y, NA),
+#                            radius = c(NA, smth_R, NA))
+#   return(cur_smooth)
+# }
+# curvatureDistribution <- function(trip,nlag)
+# {
+#   cur = calcCurvature(trip,nlag)
+#   radius = cur$radius
+#   values <- radius[is.finite(radius)]
+#   tryCatch(rtn<-generateDistribution(values,'cur'), 
+#            error = function(e) {
+#              e
+#              generateDistribution(values,'cur')
+#              rtn<-NULL
+#            }
+#   )
+#   return(rtn)  
+# }
 # distance <- function(trip,nlag=NULL)
 # {
 #   # kt = (d2y/dt2) / (1+(dy/dt)^2)^(3/2)
@@ -176,7 +176,7 @@ testFunctions<-function() {
   r <- r0 + vr * t
   trip <- data.table(x = r*cos(psi), y = r*sin(psi))
   plot(trip,type='l',col="black",main='Curvature Check',asp = 1, xlim = c(-400, 400))
-  cur<-calcCurvature(trip)
+  cur<-calcCurvature(trip,1)
   i_cir = 20
   draw.circle(cur$center_x[i_cir], cur$center_y[i_cir], cur$radius[i_cir], 
               nv = 1000, border = "red", col = NULL, lty = 1, lwd = 1)

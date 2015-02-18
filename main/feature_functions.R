@@ -16,7 +16,7 @@ distance <- function(trip,nlag=1){
 calcSpeed <- function(trip,nlag=1) {
     dx <- diff(trip[,1],lag=nlag,differences=1)
     dy <- diff(trip[,2],lag=nlag,differences=1)
-    speed = sqrt(dx^2 + dy^2)/nlag
+    speed = sqrt(dx^2 + dy^2)/nlag * 3.6
     rtn = c(rep(NA,nlag),speed)
     return(rtn)
 }
@@ -48,11 +48,11 @@ calcTangAccel <- function(trip,nlag=1) {
 
 # Normal acceleration
 calcNormAccel <- function(sp,cur,nlag) {
-    accel_fps2 = sp / cur$radius
+    accel_fps2 = sp / cur[,3]
     return(accel_fps2)
 }
 
-# Total acceleration
+# Total acceleration distribution
 TotalAccelDistribution <- function(accel_fps2_tang,accel_fps2_norm){
     accel_fps2 = accel_fps2_tang + accel_fps2_norm
     return(generateDistribution(accel_fps2,'total_accel'))  
@@ -63,19 +63,17 @@ calcCurvature <- function(trip,nlag) {
     ib=seq(2,nrow(trip)-1)
     ia=ib-1
     ic=ib+1
-    A_x = trip$x[ia]
-    B_x = trip$x[ib]
-    C_x = trip$x[ic]
-    A_y = trip$y[ia]
-    B_y = trip$y[ib]
-    C_y = trip$y[ic]
+    A_x = trip[ia,1]
+    B_x = trip[ib,1]
+    C_x = trip[ic,1]
+    A_y = trip[ia,2]
+    B_y = trip[ib,2]
+    C_y = trip[ic,2]
     D = 2 * (A_x*(B_y - C_y) + B_x*(C_y - A_y) + C_x*(A_y - B_y) )
     U_x = ((A_x^2 + A_y^2) * (B_y - C_y) + (B_x^2 + B_y^2) * (C_y - A_y) + (C_x^2 + C_y^2) * (A_y - B_y)) / D
     U_y = ((A_x^2 + A_y^2) * (C_x - B_x) + (B_x^2 + B_y^2) * (A_x - C_x) + (C_x^2 + C_y^2) * (B_x - A_x)) / D
     R = sqrt((A_x - U_x)^2 + (A_y - U_y)^2)
-    #   cur <- data.table(center_x = c(NA, U_x, NA),
-    #                     center_y = c(NA, U_y, NA),
-    #                     radius = c(NA, R, NA))
+    
     mlag <- nlag
     if (nlag %% 2 == 0) {
         mlag <- nlag + 1
@@ -84,10 +82,23 @@ calcCurvature <- function(trip,nlag) {
     smth_x <- filter(U_x, f21, sides=2)
     smth_y <- filter(U_y, f21, sides=2)
     smth_R <- filter(R, f21, sides=2)
-    cur_smooth <- data.table(center_x = c(NA, smth_x, NA),
-                             center_y = c(NA, smth_y, NA),
-                             radius = c(NA, smth_R, NA))
+    cur_smooth <- data.matrix(data.table(center_x = c(NA, smth_x, NA),center_y = c(NA, smth_y, NA),
+                                         radius = c(NA, smth_R, NA)))
     return(cur_smooth)
+}
+
+# Curvature Distribution
+curvatureDistribution <- function(cur,nlag){
+    radius = cur[,3]
+    values <- radius[is.finite(radius)]
+    tryCatch(rtn<-generateDistribution(values,'cur'), 
+             error = function(e) {
+                 e
+                 generateDistribution(values,'cur')
+                 rtn<-NULL
+             }
+    )
+    return(rtn)  
 }
 
 # Cartesian to Polar coordinates
