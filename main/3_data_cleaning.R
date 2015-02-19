@@ -5,7 +5,7 @@ rm(list=ls());gc()
 require(caret);require(data.table)
 
 # main_df <- data.frame(fread('data/main_df_218features.csv',header = T, stringsAsFactor = F))
-load(file='data/main_df_218features.RData')
+load(file='data/main_df_182features.RData')
 head(main_df)
 datadirectory <- 'data/drivers/'
 drivers <- sort(as.numeric(list.files(datadirectory)))
@@ -13,6 +13,7 @@ drivers <- sort(as.numeric(list.files(datadirectory)))
 ##################
 ### Null Value ###
 ##################
+mean(is.na(main_df))
 null_col <- c()
 for (col in 1:length(colnames(main_df))){
     if(sum(is.na(main_df[,col])>0)){
@@ -34,19 +35,19 @@ nzv[nzv$nzv,][1:10,]
 #########################################
 ### Identifying Correlated Predictors ###
 #########################################
-descrCor <- cor(main_df[,-c(1,2,218)])
+descrCor <- cor(main_df[,-c(1,2,182)])
 summary(descrCor[upper.tri(descrCor)])
 
 highlyCorDescr <- findCorrelation(descrCor, cutoff = .99)
-highlyCorName <- colnames(main_df[,-c(1,2,218)][,highlyCorDescr])
+highlyCorName <- colnames(main_df[,-c(1,2,182)][,highlyCorDescr])
 head(main_df[,highlyCorName])
 main_df <- main_df[,-which(colnames(main_df) %in% highlyCorName)]
 
 ###########################
 ### Linear Dependencies ###
 ###########################
-comboInfo <- findLinearCombos(main_df[,-c(1,2,218)])
-comboInfo
+comboInfo <- findLinearCombos(main_df[,-c(1,2,182)])
+colnames(main_df[,-c(1,2,182)][,comboInfo$remove])
 main_df[, -comboInfo$remove]
 
 #############################

@@ -3,8 +3,8 @@ setwd('/Users/ivan/Work_directory/DTA')
 rm(list=ls());gc()
 require(caret);require(data.table)
 
-# main_df <- data.frame(fread('data/main_df_218features.csv',header = T, stringsAsFactor = F))
-# load(file='data/main_df_218features.RData')
+# main_df <- data.frame(fread('data/main_df_182features.csv',header = T, stringsAsFactor = F))
+# load(file='data/main_df_182features.RData')
 head(main_df)
 datadirectory <- 'data/drivers/'
 drivers <- sort(as.numeric(list.files(datadirectory)))
@@ -42,7 +42,7 @@ fitControl <- trainControl(method = "none",number = 10,repeats = 3,classProbs = 
 gbmGrid <-  expand.grid(interaction.depth = 3,
                         n.trees = 150,
                         shrinkage = 0.1)
-feature_list <- colnames(main_df)[-c(1,2,218)]
+feature_list <- colnames(main_df)[-c(1,2,182)]
 submission <- data.frame()
 
 for (driver in drivers){
@@ -52,5 +52,5 @@ for (driver in drivers){
     submission <- rbind(submission, result)
 }
 
-write.csv(submission, file = 'submission_rf.csv', quote = F, row.names = F)
+write.csv(submission, file = 'submission_gbm.csv', quote = F, row.names = F)
 sum(is.na(submission))
