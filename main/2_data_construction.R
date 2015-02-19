@@ -26,7 +26,7 @@ for (driver in drivers){
         target <- 0
         # speed
         trip_distance <- distance(trip_data)
-        speed <- removeOutliers(calcSpeed(trip_data),250,3)
+        speed <- removeOutliers(calcSpeed(trip_data),10)
         feature_speed <- generateDistribution(speed, 'speed')
         # sd_speed
         sd_speed <- sd(speed, na.rm=T)
@@ -105,5 +105,5 @@ names(main_df) <- c('driver','trip','trip_distance',names(feature_speed),'sd_spe
                     'ex_turn','turn_point_mean',names(feature_turn_sp),'target')
 dim(main_df);head(main_df)
 
-save(main_df, file='data/main_df_218features.RData')
-write.csv(main_df, file = 'data/main_df_218features.csv', quote = F, row.names = F)
+save(main_df, file='data/main_df_182features.RData')
+write.csv(main_df, file = 'data/main_df_182features.csv', quote = F, row.names = F)

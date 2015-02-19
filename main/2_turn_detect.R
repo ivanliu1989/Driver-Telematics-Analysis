@@ -16,24 +16,17 @@ for (i in trip){
     
 }
 
-# for (i in trip){
-#     files <- paste0(path, driver, '/', i, ".csv")
-#     trip_data <- data.matrix(fread(files, header=T, sep="," ,stringsAsFactor=F))
-#     trip_data <- Kalman_Filter(trip_data,1,1,10) #Q_metres_per_second = 50*1000/3600
-#     
-#     cur <- calcCurvature(trip_data,1)
-#     speed <- calcSpeed(trip_data)
-#     
-#     plot(speed)
-#     points(speed[which(cur[,3]<=100)],col='red')
-#     #lines(a,type = 'o',col='red')    
-#     
-# }
-
-par(mfcol=c(1,1))
-speed_o <- removeOutliers(speed,250,3)
-plot(speed)
-lines(speed_o,col='red')
+for (i in trip){
+    files <- paste0(path, driver, '/', i, ".csv")
+    trip_data <- data.matrix(fread(files, header=T, sep="," ,stringsAsFactor=F))
+    trip_data <- Kalman_Filter(trip_data,1,1,10) #Q_metres_per_second = 50*1000/3600
+    
+    speed <- calcSpeed(trip_data)
+    speed_o <- removeOutliers(speed,10)
+    plot(speed)
+    lines(speed_o,col='red')
+    #lines(a,type = 'o',col='red')    
+}
 
 # driver trip
 # 83       1   83

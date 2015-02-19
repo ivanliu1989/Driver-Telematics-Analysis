@@ -102,13 +102,16 @@ curvatureDistribution <- function(cur){
 }
 
 # Speed Outliers
-removeOutliers <- function(speed, limits=250, lag=5){
-    outlier <- which(speed>limits)
-    for (i in outlier){
-        speed[i] <- median(speed[(i-lag):(i+lag)], na.rm = T)
+removeOutliers <- function(speed, limits=10){
+    while(length(which(diff(speed,rm.na=T)>limits))>0) {
+        outlier <- which(diff(speed,rm.na=T)>limits)
+        #print(outlier)
+        for (i in outlier){
+            speed[i+1] <- speed[i]#median(speed[(i-lag):(i+lag)], na.rm = T)
+        }
     }
     return(speed)
-}
+} 
 
 # # Cartesian to Polar coordinates
 # Cartesian_to_Polar <- function(trip,nlag){
