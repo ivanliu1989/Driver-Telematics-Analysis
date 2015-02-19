@@ -42,12 +42,13 @@ highlyCorDescr <- findCorrelation(descrCor, cutoff = .99)
 highlyCorName <- colnames(main_df[,-c(1,2,182)][,highlyCorDescr])
 head(main_df[,highlyCorName])
 main_df <- main_df[,-which(colnames(main_df) %in% highlyCorName)]
+colnames(main_df)
 
 ###########################
 ### Linear Dependencies ###
 ###########################
-comboInfo <- findLinearCombos(main_df[,-c(1,2,182)])
-colnames(main_df[,-c(1,2,182)][,comboInfo$remove])
+comboInfo <- findLinearCombos(main_df[,-c(1,2,148)])
+colnames(main_df[,-c(1,2,148)][,comboInfo$remove])
 main_df[, -comboInfo$remove]
 
 #############################
