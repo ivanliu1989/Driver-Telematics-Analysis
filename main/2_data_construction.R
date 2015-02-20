@@ -1,6 +1,6 @@
-# setwd('/Users/ivan/Work_directory/DTA')
+setwd('/Users/ivan/Work_directory/DTA')
 # setwd('H:/Machine_Learning/DTA')
-setwd('C:/Users/Ivan.Liuyanfeng/Desktop/Data_Mining_Work_Space/DTA')
+# setwd('C:/Users/Ivan.Liuyanfeng/Desktop/Data_Mining_Work_Space/DTA')
 rm(list=ls());gc()
 require(data.table);require(zoo);
 source('Driver-Telematics-Analysis/main/kalman_filtering.R')
@@ -106,9 +106,8 @@ for (i in 1:136){
 }
 main_df <- data.frame(main_df,stringsAsFactors = F)
 names(main_df) <- c('driver','trip','trip_distance',names(feature_speed),'sd_speed','avg_speed','drive_time','standstill_time',
-                    names(feature_tanAcc),names(feature_norAcc),names(feature_totAcc),names(feature_curvature),'sd_tanAcc','sd_norAcc','sd_cur',
-                    'avg_acc','avg_dec',names(feature_acc),names(feature_dec),'sd_acc','sd_dec','acc_time','dec_time','cons_time','ex_acc_time','ex_dec_time',
-                    'ex_turn','turn_point_mean',names(feature_turn_sp),'target')
+                    names(feature_tanAcc),names(feature_norAcc),names(feature_totAcc),names(feature_curvature),'sd_tanAcc','sd_norAcc',
+                    'sd_cur','sd_totAcc','cons_time','ex_acc_time','ex_turn','turn_point_mean',names(feature_turn_sp),'target')
 dim(main_df);head(main_df)
 
 save(main_df, file='data/main_df_136features.RData')
