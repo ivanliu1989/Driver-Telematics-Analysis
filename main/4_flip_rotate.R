@@ -27,6 +27,30 @@ getwd <- function(a){
     return(xy)
 }
 
+getdd <- function(tx,ty){
+    gap <- nrow(tx)-nrow(ty)
+    if (gap>0){
+        ty <- data.matrix(rbind(data.frame(ty),data.frame(rep(ty[nrow(ty),],gap))))
+    }else if(gap<0){
+        tx <- data.matrix(rbind(data.frame(tx),data.frame(rep(tx[nrow(tx),],gap))))
+    }else{
+        result <- 'pass'
+    }
+    result <- sum(sqrt((ty[,1]-tx[,1])^2+(ty[,2]-tx[,2])^2))
+    return(result)
+}
+
+sametrip <- function(tx,ty){
+    mm <- nrow(tx)*threshold
+    txx <- data.matrix(rbind(data.frame(tx[c(mm:nrow(tx)),]),data.frame(tx[-c(mm:nrow),])))
+    dd <- getdd(tx,txx)
+    return(getdd(tx,ty)<=dd)
+}
+
+checktrip <- function(tripcounter,tripname){
+    return (tripcounter[tripname]>2)
+}
+
 update_trips <- function(tripl,trip,tripname,tripcounter,tripother){
     if(nrow(tripl)==0){
         tripl[tripname] <- trip
@@ -50,22 +74,10 @@ update_trips <- function(tripl,trip,tripname,tripcounter,tripother){
     return(list[tripl,tripcounter,tripother])
 }
 
-getdd <- function(tx,ty){
-    gap <- nrow(tx)-nrow(ty)
-    if (gap>0){
-        
-    }else if(gap<0){
-        
-    }else{
-        result <- 'pass'
-    }
-    return(result)
-}
 
-
-
-
-### rotate + flip
+#####################
+### rotate + flip ###
+#####################
 path <- "data/drivers/"
 driver <- 1
 trip <- 183
