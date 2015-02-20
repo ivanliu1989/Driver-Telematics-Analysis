@@ -24,14 +24,15 @@ system.time(g <- train(x = data.matrix(train[,-c(1,2,80)]), y = as.factor(train$
 p <- predict(g, newdata = data.matrix(currentData[,-c(1,2,80)]), type = "prob")
 
 ### Models:
-# 4. knn - k = 13 | (0.8336250) 0.76644
+# 4. knn - k = 13 | (0.8336250) 0.76644 | 0.79242
 # 6. svmLinear | 0.76341 | 0.80957
 # 7. svmRadial - sigma=0.01546107 C=8 | 0.69989
-# 8. gbm - ntree150,inter4 | n.trees = 200, interaction.depth = 2 and shrinkage = 0.1 | (0.8933900) 0.80510 | retrain: 0.51472
-# 10. rf - mtry17 | 0.81715 / 0.81915 | 0.84880 | 0.84629
+# 8. gbm - ntree150,inter4 | n.trees = 200, interaction.depth = 2 and shrinkage = 0.1 
+# | (0.8933900) 0.80510 | retrain: 0.51472 | 0.84145 | 0.83521
+# 10. rf - mtry17 | 0.81715 / 0.81915 | 0.84880 | 0.84629 /0.84154
 # 11. glm | 0.76609
-# 12. nnet - size1,decay0.1 | 0.77582
-
+# 12. nnet - size1,decay0.1 | 0.77582 | 0.80379
+# ensemble 0.88327
 
 ## 1. bdk/xyf(som) - xdim = 7, ydim = 9, xweight = 0.7857143 and topo = hexagonal | (0.7294500)
 ## 2. gamboost | *
