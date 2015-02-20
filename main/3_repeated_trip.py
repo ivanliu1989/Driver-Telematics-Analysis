@@ -114,9 +114,9 @@ def draw(dataPath, driver, threshold):
     plt.show()
 
 # parameters
-dataPath = 'data/drivers/'
+dataPath = 'data/drivers'
 drivers = os.listdir(dataPath)
 threshold = 5
 
 for driver in drivers:
-    draw(dataPath,driver)
+    draw(dataPath,driver,threshold)
