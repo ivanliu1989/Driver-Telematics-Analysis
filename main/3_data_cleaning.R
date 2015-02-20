@@ -4,11 +4,9 @@ setwd('C:/Users/Ivan.Liuyanfeng/Desktop/Data_Mining_Work_Space/DTA')
 rm(list=ls());gc()
 require(caret);require(data.table)
 
-# main_df <- data.frame(fread('data/main_df_218features.csv',header = T, stringsAsFactor = F))
-load(file='data/main_df_182features.RData')
+# main_df <- data.frame(fread('data/main_df_136features.csv',header = T, stringsAsFactor = F))
+load(file='data/main_df_136features.RData')
 head(main_df)
-datadirectory <- 'data/drivers/'
-drivers <- sort(as.numeric(list.files(datadirectory)))
 
 ##################
 ### Null Value ###
@@ -23,23 +21,21 @@ for (col in 1:length(colnames(main_df))){
     }
 }
 colnames(main_df[,null_col])
-# a <- main_df[which(is.na(main_df[,null_col[1]])),]
 
 ##########################
 ### Near Zero Variance ###
 ##########################
 nzv <- nearZeroVar(main_df, saveMetrics= TRUE)
 nzv[nzv$nzv,][1:10,]
-# main_df <- main_df[, -77] # nzv: ex_turn
 
 #########################################
 ### Identifying Correlated Predictors ###
 #########################################
-descrCor <- cor(main_df[,-c(1,2,182)])
+descrCor <- cor(main_df[,-c(1,2,136)])
 summary(descrCor[upper.tri(descrCor)])
 
 highlyCorDescr <- findCorrelation(descrCor, cutoff = .99)
-highlyCorName <- colnames(main_df[,-c(1,2,182)][,highlyCorDescr])
+highlyCorName <- colnames(main_df[,-c(1,2,136)][,highlyCorDescr])
 head(main_df[,highlyCorName])
 main_df <- main_df[,-which(colnames(main_df) %in% highlyCorName)]
 colnames(main_df)
@@ -47,8 +43,8 @@ colnames(main_df)
 ###########################
 ### Linear Dependencies ###
 ###########################
-comboInfo <- findLinearCombos(main_df[,-c(1,2,148)])
-colnames(main_df[,-c(1,2,148)][,comboInfo$remove])
+comboInfo <- findLinearCombos(main_df[,-c(1,2,136)])
+colnames(main_df[,-c(1,2,136)][,comboInfo$remove])
 main_df[, -comboInfo$remove]
 
 #############################
