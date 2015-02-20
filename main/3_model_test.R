@@ -28,7 +28,7 @@ p <- predict(g, newdata = data.matrix(currentData[,-c(1,2,80)]), type = "prob")
 # 6. svmLinear | 0.76341 | 0.80957
 # 7. svmRadial - sigma=0.01546107 C=8 | 0.69989
 # 8. gbm - ntree150,inter4 | n.trees = 200, interaction.depth = 2 and shrinkage = 0.1 | (0.8933900) 0.80510 | retrain: 0.51472
-# 10. rf - mtry17 | 0.81715 / 0.81915 | 0.84880
+# 10. rf - mtry17 | 0.81715 / 0.81915 | 0.84880 | 0.84629
 # 11. glm | 0.76609
 # 12. nnet - size1,decay0.1 | 0.77582
 

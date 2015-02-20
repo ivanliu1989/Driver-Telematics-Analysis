@@ -79,8 +79,8 @@ update_trips <- function(tripl,trip,tripname,tripcounter,tripother){
 ### rotate + flip ###
 #####################
 path <- "data/drivers/"
-driver <- 1
-trip <- 2
+driver <- 2312
+trip <- 123
 files <- paste0(path, driver, '/', trip, ".csv")
 trip_data <- data.matrix(fread(files, header=T, sep="," ,stringsAsFactor=F))
 trip_data <- Kalman_Filter(trip_data,1,1,12.5) #Q_metres_per_second = 50*1000/3600
@@ -92,8 +92,20 @@ trip_data_flip <- flip(trip_data_rot)
 
 par(mfcol=c(1,3))
 plot(trip_data)
+cur <- calcCurvature(trip_data,1)
+a <- trip_data[which(cur[,3]<=100),]
+points(a,col='blue')  
+
 plot(trip_data_rot)
+cur <- calcCurvature(trip_data_rot,1)
+a <- trip_data_rot[which(cur[,3]<=100),]
+points(a,col='blue')
+
 plot(trip_data_flip)
+cur <- calcCurvature(trip_data_flip,1)
+a <- trip_data_flip[which(cur[,3]<=100),]
+points(a,col='blue') 
+
 
 ### compare ###
 t1 <- data.matrix(fread(files, header=T, sep="," ,stringsAsFactor=F))
@@ -111,23 +123,28 @@ getdd(t1,t2)
 
 
 ###
-# files <- paste0(path, 1, '/', 1, ".csv")
-# trip_data <- data.matrix(fread(files, header=T, sep="," ,stringsAsFactor=F))
-# trip_data <- Kalman_Filter(trip_data,1,1,12.5) #Q_metres_per_second = 50*1000/3600
-# trip_data_rot <- rotate_trip(trip_data)
-# sum(sign(trip_data[,2]))
-# trip_data_flip <- flip(trip_data_rot)
-# par(mfcol=c(1,1))
-# plot(trip_data,type='l')
-# for(trip in 20:30){
-#     files <- paste0(path, driver, '/', trip, ".csv")
-#     trip_data <- data.matrix(fread(files, header=T, sep="," ,stringsAsFactor=F))
-#     trip_data <- Kalman_Filter(trip_data,1,1,12.5) #Q_metres_per_second = 50*1000/3600
+par(mfcol=c(3,3))
+files <- paste0(path, driver, '/', trip, ".csv")
+for(trip in sample(1:200,9)){
+    files <- paste0(path, driver, '/', trip, ".csv")
+    trip_data <- data.matrix(fread(files, header=T, sep="," ,stringsAsFactor=F))
+    trip_data <- Kalman_Filter(trip_data,1,1,12.5) #Q_metres_per_second = 50*1000/3600
+    trip_data_rot <- rotate_trip(trip_data)
+    
+    sum(sign(trip_data[,2]))
+    trip_data_flip <- flip(trip_data_rot)
+#     plot(trip_data)
+#     cur <- calcCurvature(trip_data,1)
+#     a <- trip_data[which(cur[,3]<=100),]
+#     points(a,col='blue')  
 #     
-#     trip_data_rot <- rotate_trip(trip_data)
+#     plot(trip_data_rot)
+#     cur <- calcCurvature(trip_data_rot,1)
+#     a <- trip_data_rot[which(cur[,3]<=100),]
+#     points(a,col='blue')
 #     
-#     sum(sign(trip_data[,2]))
-#     trip_data_flip <- flip(trip_data_rot)
-#     
-#     lines(trip_data_flip,col=trip)
-# }
+    plot(trip_data_flip)
+    cur <- calcCurvature(trip_data_flip,1)
+    a <- trip_data_flip[which(cur[,3]<=100),]
+    points(a,col='red') 
+}
