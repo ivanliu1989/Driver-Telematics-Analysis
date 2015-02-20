@@ -23,7 +23,7 @@ classifier <- function(driver, model='gbm', nrOfDriversToCompare=5, features) {
     
     #model
     g <- train(x = data.matrix(train[,c(features)]), y = as.factor(train$target), method = model,trControl = fitControl, 
-                preProc = c("center", "scale"),tuneLength = 6,metric = "ROC",tuneGrid = gbmGrid)
+                tuneLength = 6,metric = "ROC",tuneGrid = gbmGrid)#, preProc = c("center", "scale"))
     p <- predict(g, newdata = data.matrix(currentData[,c(features)]), type = "prob")
     
     result <- data.frame(driver_trip=paste0(currentData[,1],'_',currentData[,2],sep=''), prob=p$Yes)
@@ -33,18 +33,18 @@ classifier <- function(driver, model='gbm', nrOfDriversToCompare=5, features) {
 #################
 ### Main Loop ###
 #################
-library(doMC)
-registerDoMC(cores = 2)
+# library(doMC)
+# registerDoMC(cores = 2)
 #load('Driver-Telematics-Analysis/feature_selection/rfe_var.RData')
 set.seed(888)
 fitControl <- trainControl(method = "none",number = 10,repeats = 3,classProbs = TRUE,
                            summaryFunction = twoClassSummary,adaptive = list(min = 4,alpha = 0.05,method = "BT",complete = TRUE))
-gbmGrid <-  expand.grid(k = 13 )
+gbmGrid <-  expand.grid(mtry=18)
 feature_list <- colnames(main_df)[-c(1,2,136)]
 submission <- data.frame()
 
 for (driver in drivers){
-    result <- classifier(driver,'knn',5,feature_list)
+    result <- classifier(driver,'rf',5,feature_list)
     print(paste0('driver: ', driver, ' | ' ,date())) 
     
     submission <- rbind(submission, result)
