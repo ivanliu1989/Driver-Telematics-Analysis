@@ -30,9 +30,9 @@ getwd <- function(a){
 getdd <- function(tx,ty){
     gap <- nrow(tx)-nrow(ty)
     if (gap>0){
-        ty <- data.matrix(rbind(data.frame(ty),data.frame(rep(ty[nrow(ty),],gap))))
+        ty <- data.matrix(rbind(data.frame(ty),data.frame(X1=rep(ty[nrow(ty),1],gap),X2=rep(ty[nrow(ty),1],gap))))
     }else if(gap<0){
-        tx <- data.matrix(rbind(data.frame(tx),data.frame(rep(tx[nrow(tx),],gap))))
+        tx <- data.matrix(rbind(data.frame(tx),data.frame(X1=rep(tx[nrow(tx),1],-gap),X2=rep(tx[nrow(tx),1],-gap))))
     }else{
         result <- 'pass'
     }
@@ -94,6 +94,21 @@ par(mfcol=c(1,3))
 plot(trip_data)
 plot(trip_data_rot)
 plot(trip_data_flip)
+
+### compare ###
+t1 <- data.matrix(fread(files, header=T, sep="," ,stringsAsFactor=F))
+t1 <- Kalman_Filter(t1,1,1,12.5) #Q_metres_per_second = 50*1000/3600
+t1 <- rotate_trip(t1)
+t1 <- flip(t1)
+
+t2 <- data.matrix(fread(files, header=T, sep="," ,stringsAsFactor=F))
+t2 <- Kalman_Filter(t2,1,1,12.5) #Q_metres_per_second = 50*1000/3600
+t2 <- rotate_trip(t2)
+t2 <- flip(t2)
+
+threshold <- 5
+getdd(t1,t2)
+
 
 ###
 # files <- paste0(path, 1, '/', 1, ".csv")
