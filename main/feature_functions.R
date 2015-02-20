@@ -16,7 +16,7 @@ distance <- function(trip,nlag=1){
 calcSpeed <- function(trip,nlag=1) {
     dx <- diff(trip[,1],lag=nlag,differences=1)
     dy <- diff(trip[,2],lag=nlag,differences=1)
-    speed = sqrt(dx^2 + dy^2)/nlag * 3.6
+    speed = sqrt(dx^2 + dy^2)/nlag
     rtn = c(rep(NA,nlag),speed)
     return(rtn)
 }
@@ -48,14 +48,14 @@ calcTangAccel <- function(trip,nlag=1) {
 
 # Normal acceleration
 calcNormAccel <- function(sp,cur,nlag) {
-    accel_fps2 = sp / cur[,3]
+    accel_fps2 = (sp^2) / cur[,3]
     return(accel_fps2)
 }
 
-# Total acceleration distribution
-TotalAccelDistribution <- function(accel_fps2_tang,accel_fps2_norm){
-    accel_fps2 = accel_fps2_tang + accel_fps2_norm
-    return(generateDistribution(accel_fps2,'total_accel'))  
+# Total acceleration 
+totalAccel <- function(accel_fps2_tang,accel_fps2_norm){
+    accel_fps2 = sqrt(accel_fps2_tang^2 + accel_fps2_norm^2)
+    return(accel_fps2)  
 }
 
 # Curvature
@@ -102,15 +102,29 @@ curvatureDistribution <- function(cur){
 }
 
 # Speed Outliers
-removeOutliers <- function(speed, limits=10){
+removeOutliers <- function(speed, limits=9.8){
     while(length(which(diff(speed,rm.na=T)>limits))>0) {
         outlier <- which(diff(speed,rm.na=T)>limits)
         #print(outlier)
         for (i in outlier){
-            speed[i+1] <- speed[i]#median(speed[(i-lag):(i+lag)], na.rm = T)
+            speed[i+1] <- speed[i] + diff(speed,rm.na=T)[i-1]#median(speed[(i-lag):(i+lag)], na.rm = T)
         }
     }
     return(speed)
+} 
+
+# Acceleration Outliers
+removeAccOutliers <- function(totAcc,tanAcc,norAcc, limits=9.8){
+    while(length(which(totAcc>limits))>0) {
+        outlier <- which(totAcc>limits)
+        #print(outlier)
+        for (i in outlier){
+            totAcc[i] <- totAcc[i-1]
+            tanAcc[i] <- sqrt(totAcc[i]^2-norAcc[i]^2)
+        }
+    }
+    acc <- data.matrix(data.table(totAcc = totAcc,tanAcc = tanAcc, norAcc = norAcc))
+    return(acc)
 } 
 
 # # Cartesian to Polar coordinates
