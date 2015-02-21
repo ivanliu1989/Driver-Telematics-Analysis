@@ -193,6 +193,10 @@ match_matrix <- matrix(0, nrow = length(drivers)*200, ncol = 3, dimnames = list(
 for(driver in drivers){
     
     for (trip in 1:200){
+        if(trip >= 200){
+            break
+        }
+        
         print(paste0('Driver: ', driver, ' Trip: ', trip))
         files <- paste0(path, driver, '/', trip, ".csv")
         tx <- data.matrix(fread(files, header=T, sep="," ,stringsAsFactor=F))
