@@ -1,7 +1,7 @@
 datadirectory <- 'data/drivers/'
 drivers <- sort(as.numeric(list.files(datadirectory)))
 
-classifier <- function(driver, model='gbm', nrOfDriversToCompare=5, features, refData) {
+classifier <- function(driver, model='gbm',refData) {
     currentData <- main_df[main_df[,1]==driver,]
     currentData$target <- 'Yes'
     
@@ -9,9 +9,9 @@ classifier <- function(driver, model='gbm', nrOfDriversToCompare=5, features, re
     train <- rbind(currentData, refData)
     
     #model
-    g <- train(x = data.matrix(train[,c(features)]), y = as.factor(train$target), method = model,trControl = fitControl, 
-               tuneLength = 6,metric = "ROC", preProc = c("center", "scale"),tuneGrid = gbmGrid)
-    p <- predict(g, newdata = data.matrix(currentData[,c(features)]), type = "prob")
+    g <- train(x = data.matrix(train[,-c(1,2,136)]), y = as.factor(train$target), method = model,trControl = fitControl, 
+               tuneLength = 6,metric = "ROC", tuneGrid = gbmGrid)#preProc = c("center", "scale"),
+    p <- predict(g, newdata = data.matrix(currentData[,-c(1,2,136)]), type = "prob")
     
     result <- data.frame(driver_trip=paste0(currentData[,1],'_',currentData[,2],sep=''), prob=p$Yes)
     return(result)
@@ -27,8 +27,11 @@ gbmGrid <-  expand.grid(mtry=18)
 feature_list <- colnames(main_df)[-c(1,2,136)]
 submission <- data.frame()
 
+preProcValues <- preProcess(main_df[,-c(1,2,136)], method = c("center", "scale"))
+main_df[,-c(1,2,136)] <- predict(preProcValues, main_df[,-c(1,2,136)])
+
 for (driver in drivers){
-    result <- classifier(driver,'rf',5,feature_list, result_centriods)
+    result <- classifier(driver,'rf', result_centriods)
     print(paste0('driver: ', driver, ' | ' ,date())) 
     
     submission <- rbind(submission, result)
