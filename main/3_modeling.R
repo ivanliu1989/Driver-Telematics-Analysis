@@ -12,12 +12,14 @@ drivers <- sort(as.numeric(list.files(datadirectory)))
 ##################
 ### Classifier ###
 ##################
-classifier <- function(driver, model='gbm', nrOfDriversToCompare=5, features) {
+classifier <- function(driver, model='gbm', nrOfDriversToCompare=5, features, refData) {
     currentData <- main_df[main_df[,1]==driver,]
     currentData$target <- 'Yes'
     
-    test_num <- sample(drivers[which(drivers!=driver)],nrOfDriversToCompare)
-    refData <-  main_df[main_df[,1] %in% test_num,]
+#     test_num <- sample(drivers[which(drivers!=driver)],nrOfDriversToCompare)
+    
+#     refData <-  main_df[main_df[,1] %in% test_num,]
+#     refData <-  result_centriods
     refData$target <- 'No'
     train <- rbind(currentData, refData)
     
@@ -44,7 +46,7 @@ feature_list <- colnames(main_df)[-c(1,2,136)]
 submission <- data.frame()
 
 for (driver in drivers){
-    result <- classifier(driver,'rf',5,feature_list)
+    result <- classifier(driver,'rf',5,feature_list, result_centriods)
     print(paste0('driver: ', driver, ' | ' ,date())) 
     
     submission <- rbind(submission, result)
