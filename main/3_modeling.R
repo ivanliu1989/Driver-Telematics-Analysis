@@ -4,7 +4,7 @@ rm(list=ls());gc()
 require(caret);require(data.table)
 
 # main_df <- data.frame(fread('data/main_df_182features.csv',header = T, stringsAsFactor = F))
-# load(file='data/main_df_182features.RData')
+# load(file='data/main_df_138features.RData')
 head(main_df)
 datadirectory <- 'data/drivers/'
 drivers <- sort(as.numeric(list.files(datadirectory)))
@@ -50,5 +50,5 @@ for (driver in drivers){
     submission <- rbind(submission, result)
 }
 
-write.csv(submission, file = 'submission_rf_136_no_norm.csv', quote = F, row.names = F)
+write.csv(submission, file = 'submission_lg_136.csv', quote = F, row.names = F)
 sum(is.na(submission))
