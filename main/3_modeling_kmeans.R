@@ -37,7 +37,7 @@ for (driver in drivers){
     submission <- rbind(submission, result)
 }
 
-write.csv(submission, file = 'submission_lg_136.csv', quote = F, row.names = F)
+write.csv(submission, file = 'submission_rf_kmeans_136.csv', quote = F, row.names = F)
 sum(is.na(submission))
 
 ### classifier 2 ###

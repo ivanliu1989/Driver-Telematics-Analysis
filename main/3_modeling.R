@@ -25,7 +25,7 @@ classifier <- function(driver, model='gbm', nrOfDriversToCompare=5, features) {
     
     #model
     g <- train(x = data.matrix(train[,c(features)]), y = as.factor(train$target), method = model,trControl = fitControl, 
-                tuneLength = 6,metric = "ROC",tuneGrid = gbmGrid)#, preProc = c("center", "scale"))
+                tuneLength = 6,metric = "ROC",tuneGrid = gbmGrid, preProc = c("center", "scale"))
     p <- predict(g, newdata = data.matrix(currentData[,c(features)]), type = "prob")
     
     result <- data.frame(driver_trip=paste0(currentData[,1],'_',currentData[,2],sep=''), prob=p$Yes)
@@ -42,7 +42,7 @@ set.seed(888)
 fitControl <- trainControl(method = "none",number = 10,repeats = 3,classProbs = TRUE,
                            summaryFunction = twoClassSummary,adaptive = list(min = 4,alpha = 0.05,method = "BT",complete = TRUE))
 gbmGrid <-  expand.grid(mtry=18)
-feature_list <- colnames(main_df)[-c(1,2,138)]
+feature_list <- colnames(main_df)[-c(1,2,88:107,136)]
 submission <- data.frame()
 
 for (driver in drivers){
@@ -52,5 +52,5 @@ for (driver in drivers){
     submission <- rbind(submission, result)
 }
 
-write.csv(submission, file = 'submission_lg_136.csv', quote = F, row.names = F)
+write.csv(submission, file = 'submission_rf_136_none_curdist.csv', quote = F, row.names = F)
 sum(is.na(submission))
