@@ -37,11 +37,12 @@ for (driver in drivers){
 write.csv(submission, file = 'test_kmeans.csv', quote = F, row.names = F)
 sum(is.na(submission))
 
-### one_train_set
+#####################
+### one_train_set ###
+#####################
 fit.km <- kmeans(main_df[,-c(1,2,136)], algorithm="Lloyd", centers = 500, nstart = 25, iter.max = 20)
 
 result <- data.frame(driver=driver, trip=driver, fit.km$centers, target = 0)
-return(result)
 
 for (driver in drivers){
     refData <-  main_df[-which(main_df[,1]==driver),]
@@ -50,3 +51,5 @@ for (driver in drivers){
         print(paste0('driver: ', driver, ' | nrow: ' ,N))
     }
 }
+write.csv(submission, file = 'test_kmeans.csv', quote = F, row.names = F)
+sum(is.na(submission))
