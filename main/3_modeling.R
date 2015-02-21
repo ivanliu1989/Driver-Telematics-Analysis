@@ -50,5 +50,5 @@ for (driver in drivers){
     submission <- rbind(submission, result)
 }
 
-write.csv(submission, file = 'submission_knn_136.csv', quote = F, row.names = F)
+write.csv(submission, file = 'submission_rf_136_no_norm.csv', quote = F, row.names = F)
 sum(is.na(submission))

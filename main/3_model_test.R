@@ -30,7 +30,7 @@ p <- predict(g, newdata = data.matrix(currentData[,-c(1,2,80)]), type = "prob")
 # 8. gbm - ntree150,inter4 | n.trees = 200, interaction.depth = 2 and shrinkage = 0.1 
 # | (0.8933900) 0.80510 | retrain: 0.51472 | 0.84145 | 0.83521
 # 10. rf - mtry17 | 0.81715 / 0.81915 | 0.84880 | 0.84629 /0.84154 | none pre
-# 11. glm | 0.76609
+# 11. glm | 0.76609 | 0.65470
 # 12. nnet - size1,decay0.1 | 0.77582 | 0.80379
 # ensemble 0.88327
 
