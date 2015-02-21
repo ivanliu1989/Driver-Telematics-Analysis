@@ -42,15 +42,15 @@ set.seed(888)
 fitControl <- trainControl(method = "none",number = 10,repeats = 3,classProbs = TRUE,
                            summaryFunction = twoClassSummary,adaptive = list(min = 4,alpha = 0.05,method = "BT",complete = TRUE))
 gbmGrid <-  expand.grid(mtry=18)
-feature_list <- colnames(main_df)[-c(1,2,88:107,136)]
+feature_list <- colnames(main_df)[-c(1,2,26:27,68:107,111:135,136)]
 submission <- data.frame()
 
 for (driver in drivers){
-    result <- classifier(driver,'rf',5,feature_list)
+    result <- classifier(driver,'rf',3,feature_list)
     print(paste0('driver: ', driver, ' | ' ,date())) 
     
     submission <- rbind(submission, result)
 }
 
-write.csv(submission, file = 'submission_rf_136_none_curdist.csv', quote = F, row.names = F)
+write.csv(submission, file = 'submission_rf_136_66.csv', quote = F, row.names = F)
 sum(is.na(submission))
