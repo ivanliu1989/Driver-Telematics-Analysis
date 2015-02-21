@@ -113,10 +113,13 @@ def draw(dataPath, driver, threshold):
 
     plt.show()
 
-# parameters
+# parameters 2212 123 153
 dataPath = 'data/drivers'
 drivers = os.listdir(dataPath)
-threshold = 5
+threshold = 0.05
 
 for driver in drivers:
     draw(dataPath,driver,threshold)
+
+t1=pd.read_csv(dataPath+'/2212/123.csv')
+t2=pd.read_csv(dataPath+'/2212/153.csv')
