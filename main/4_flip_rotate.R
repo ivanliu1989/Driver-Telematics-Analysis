@@ -1,3 +1,7 @@
+setwd('/Users/ivan/Work_directory/DTA')
+rm(list=ls());gc()
+datadirectory <- 'data/drivers/'
+drivers <- sort(as.numeric(list.files(datadirectory)))
 source('Driver-Telematics-Analysis/main/kalman_filtering.R')
 source('Driver-Telematics-Analysis/main/feature_functions.R')
 
@@ -43,7 +47,7 @@ getdd <- function(tx,ty){
 }
 
 sametrip <- function(tx,ty){
-    if((abs(nrow(tx)-nrow(ty))/max(nrow(tx),nrow(ty))>0.8)&(abs(distance(tx)-distance(ty))/max(distance(tx),distance(ty))>0.8){
+    if((abs(nrow(tx)-nrow(ty))/max(nrow(tx),nrow(ty))>0.8)&(abs(distance(tx)-distance(ty))/max(distance(tx),distance(ty))>0.8)){
         mm <- as.integer(nrow(tx)*threshold)
         n <- nrow(tx)
         txx <- tx
@@ -205,14 +209,14 @@ for(driver in drivers){
         }
         
         # print(paste0('Driver: ', driver, ' Trip: ', trip))
-        files <- paste0(path, driver, '/', trip, ".csv")
+        files <- paste0(datadirectory, driver, '/', trip, ".csv")
         tx <- data.matrix(fread(files, header=T, sep="," ,stringsAsFactor=F))
         # tx <- Kalman_Filter(tx,1,1,12.5) #Q_metres_per_second = 50*1000/3600
         tx <- rotate_trip(tx)
         tx <- flip(tx)
         
         for(other in c((trip+1):200)){
-            files <- paste0(path, driver, '/', other, ".csv")
+            files <- paste0(datadirectory, driver, '/', other, ".csv")
             ty <- data.matrix(fread(files, header=T, sep="," ,stringsAsFactor=F))
             # ty <- Kalman_Filter(ty,1,1,12.5) #Q_metres_per_second = 50*1000/3600
             ty <- flip(rotate_trip(ty))
