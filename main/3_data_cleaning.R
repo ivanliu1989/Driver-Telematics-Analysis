@@ -68,7 +68,9 @@ main_df[, -comboInfo$remove]
 ######################
 ### Abnormal Trips ###
 ######################
-main_df[which(main_df[,'speed_100_pct']>120),c(1,2)]
+main_df[which(main_df[,'speed_100_pct']>85),c(1,2)]
+main_df[which(main_df[,'trip_distance']/main_df[,'drive_time']>85),c(1,2)]
+
 
 speed_90_pct - 2.787522e+02
 speed_95_pct - 3.922603e+02
@@ -83,18 +85,27 @@ driver trip
 # 1635   71 large jumps
 1635   88 # 2 points
 # 1635  160 large jumps
-1899  164
-2056   21
-2441   11
-2441   76
-2441  160
-2441  185
-2774   13
-2973  130
-2982   72
+# 1899  164 large jumps
+2056   21 # 2 points
+# 2441   11 large jumps, maybe 1
+# 2441   76 large jumps, maybe 1
+# 2441  160 large jumps, maybe 1
+# 2441  185 large jumps, maybe 1
+# 2774   13 large jumps
+# 2973  130 ex-large jumps
+# 2982   72 ex-large jumps
 # 3105   15 large jumps
-3562   95
+3562   95 # 2 points
+2257  163 # 2 points
+1635   65 # 2 points
+2441  155 # unreasonable jumps
+2491   57 # unreasonable jumps
+3562   95 # 2 points
+# 3553   44 ex-large jumps
+214   36 # 2 points
 
-driver <- 1899; trip <- 164; files <- paste0(path, driver, '/', trip, ".csv")
+driver <- 214; trip <- 36; files <- paste0(path, driver, '/', trip, ".csv")
 trip_data <- data.matrix(fread(files, header=T, sep="," ,stringsAsFactor=F))
 plot(trip_data)
+
+
