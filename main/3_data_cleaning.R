@@ -22,6 +22,14 @@ for (col in 1:length(colnames(main_df))){
 }
 colnames(main_df[,null_col])
 
+##############################
+### Data Range Calibration ###
+##############################
+
+
+
+
+
 ##########################
 ### Near Zero Variance ###
 ##########################
