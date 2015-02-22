@@ -190,7 +190,7 @@ sametrip <- function(tx,ty){
 ########################
 ### Detect Same Trip ###
 ########################
-threshold <- 0.01
+threshold <- 0.02
 d_num <- 0
 match_matrix <- matrix(0, nrow = length(drivers)*200, ncol = 3, dimnames = list(NULL, NULL))
 for(driver in drivers){
@@ -203,16 +203,15 @@ for(driver in drivers){
         print(paste0('Driver: ', driver, ' Trip: ', trip))
         files <- paste0(path, driver, '/', trip, ".csv")
         tx <- data.matrix(fread(files, header=T, sep="," ,stringsAsFactor=F))
-        tx <- Kalman_Filter(tx,1,1,12.5) #Q_metres_per_second = 50*1000/3600
+        # tx <- Kalman_Filter(tx,1,1,12.5) #Q_metres_per_second = 50*1000/3600
         tx <- rotate_trip(tx)
         tx <- flip(tx)
         
         for(other in c((trip+1):200)){
             files <- paste0(path, driver, '/', other, ".csv")
             ty <- data.matrix(fread(files, header=T, sep="," ,stringsAsFactor=F))
-            ty <- Kalman_Filter(ty,1,1,12.5) #Q_metres_per_second = 50*1000/3600
-            ty <- rotate_trip(ty)
-            ty <- flip(ty)
+            # ty <- Kalman_Filter(ty,1,1,12.5) #Q_metres_per_second = 50*1000/3600
+            ty <- flip(rotate_trip(ty))
             
             if(sametrip(tx,ty)){
                 d_num <- d_num + 1
