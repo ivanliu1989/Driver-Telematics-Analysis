@@ -45,8 +45,11 @@ getdd <- function(tx,ty){
 }
 
 sametrip <- function(tx,ty){
-    mm <- as.integer(nrow(tx)*threshold+1)
-    txx <- data.matrix(rbind(data.frame(tx[c(mm:nrow(tx)),]),data.frame(tx[(nrow(tx)-mm+2):nrow(tx),])))
+    mm <- as.integer(nrow(tx)*threshold)
+    n <- nrow(tx)
+    txx <- tx
+    txx[1:(n-mm),] <- tx[(mm+1):n,]
+    txx[(n-mm+1):n,] <- tx[(n-mm+1):n,]
     dd <- getdd(tx,txx)
     return(getdd(tx,ty)<=dd)
 }
@@ -187,7 +190,7 @@ sametrip <- function(tx,ty){
 ########################
 ### Detect Same Trip ###
 ########################
-threshold <- 0.05
+threshold <- 0.01
 d_num <- 0
 match_matrix <- matrix(0, nrow = length(drivers)*200, ncol = 3, dimnames = list(NULL, NULL))
 for(driver in drivers){
