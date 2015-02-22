@@ -37,8 +37,6 @@ getdd <- function(tx,ty){
         ty <- data.matrix(rbind(data.frame(ty),data.frame(X1=rep(ty[nrow(ty),1],gap),X2=rep(ty[nrow(ty),2],gap))))
     }else if(gap<0){
         tx <- data.matrix(rbind(data.frame(tx),data.frame(X1=rep(tx[nrow(tx),1],-gap),X2=rep(tx[nrow(tx),2],-gap))))
-    }else{
-        result <- 'pass'
     }
     result <- sum(sqrt((ty[,1]-tx[,1])^2+(ty[,2]-tx[,2])^2))
     return(result)
@@ -192,15 +190,17 @@ sametrip <- function(tx,ty){
 ########################
 threshold <- 0.02
 d_num <- 0
-match_matrix <- matrix(0, nrow = length(drivers)*200, ncol = 3, dimnames = list(NULL, NULL))
+match_matrix <- matrix(0, nrow = length(drivers)*100, ncol = 3, dimnames = list(NULL, NULL))
+start <- date()
+print(start)
 for(driver in drivers){
-    
+    print(date())
     for (trip in 1:200){
         if(trip >= 200){
             break
         }
         
-        print(paste0('Driver: ', driver, ' Trip: ', trip))
+        # print(paste0('Driver: ', driver, ' Trip: ', trip))
         files <- paste0(path, driver, '/', trip, ".csv")
         tx <- data.matrix(fread(files, header=T, sep="," ,stringsAsFactor=F))
         # tx <- Kalman_Filter(tx,1,1,12.5) #Q_metres_per_second = 50*1000/3600
@@ -215,7 +215,7 @@ for(driver in drivers){
             
             if(sametrip(tx,ty)){
                 d_num <- d_num + 1
-                print(paste0('Driver ',driver,'Trips Match: ', trip, ' | ', other, '!!!'))
+                print(paste0('Driver ',driver,' Trips Match: ', trip, ' | ', other, '!!!'))
                 plot(tx);points(ty,col='red')
                 match_matrix[d_num,] <- c(driver,trip,other)    
             }        
