@@ -43,13 +43,17 @@ getdd <- function(tx,ty){
 }
 
 sametrip <- function(tx,ty){
-    mm <- as.integer(nrow(tx)*threshold)
-    n <- nrow(tx)
-    txx <- tx
-    txx[1:(n-mm),] <- tx[(mm+1):n,]
-    txx[(n-mm+1):n,] <- tx[(n-mm+1):n,]
-    dd <- getdd(tx,txx)
-    return(getdd(tx,ty)<=dd)
+    if((abs(nrow(tx)-nrow(ty))/max(nrow(tx),nrow(ty))>0.8)&(abs(distance(tx)-distance(ty))/max(distance(tx),distance(ty))){
+        mm <- as.integer(nrow(tx)*threshold)
+        n <- nrow(tx)
+        txx <- tx
+        txx[1:(n-mm),] <- tx[(mm+1):n,]
+        txx[(n-mm+1):n,] <- tx[(n-mm+1):n,]
+        dd <- getdd(tx,txx)
+        return(getdd(tx,ty)<=dd)
+    }else{
+        return(FALSE)
+    }
 }
 
 ### other functions ###
