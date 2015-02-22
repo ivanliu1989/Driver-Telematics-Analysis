@@ -107,14 +107,14 @@ removeOutliers <- function(speed, limits=9.8){
         outlier <- which(diff(speed,rm.na=T)>limits)
         #print(outlier)
         for (i in outlier){
-            speed[i+1] <- median(speed[(i-2):(i+2)], na.rm = T) #speed[i] + diff(speed,rm.na=T)[i-1]
+            speed[i+1] <- speed[i] + limits#diff(speed,rm.na=T)[i-1] #median(speed[(i-2):(i+2)], na.rm = T)
         }
     }
     return(speed)
 } 
 
 # Acceleration Outliers
-removeAccOutliers <- function(totAcc,tanAcc,norAcc, limits=9.8){
+removeAccOutliers <- function(totAcc,tanAcc,norAcc, limits=9.79999999){
     while(length(which(totAcc>limits))>0) {
         outlier <- which(totAcc>limits)
         #print(outlier)
