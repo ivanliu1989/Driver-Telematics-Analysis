@@ -47,7 +47,7 @@ getdd <- function(tx,ty){
 }
 
 sametrip <- function(tx,ty){
-    if((abs(nrow(tx)-nrow(ty))/max(nrow(tx),nrow(ty))>0.8)&(abs(distance(tx)-distance(ty))/max(distance(tx),distance(ty))>0.8)){
+    if((abs(nrow(tx)-nrow(ty))/max(nrow(tx),nrow(ty))<0.2)&(abs(distance(tx)-distance(ty))/max(distance(tx),distance(ty))<0.2)){
         mm <- as.integer(nrow(tx)*threshold)
         n <- nrow(tx)
         txx <- tx
@@ -56,7 +56,7 @@ sametrip <- function(tx,ty){
         dd <- getdd(tx,txx)
         return(getdd(tx,ty)<=dd)
     }else{
-        return(FALSE)
+       return(FALSE)
     }
 }
 
@@ -196,7 +196,7 @@ sametrip <- function(tx,ty){
 ########################
 ### Detect Same Trip ###
 ########################
-threshold <- 0.02
+threshold <- 0.05
 d_num <- 0
 match_matrix <- matrix(0, nrow = length(drivers)*100, ncol = 3, dimnames = list(NULL, NULL))
 start <- date()
@@ -212,8 +212,7 @@ for(driver in drivers){
         files <- paste0(datadirectory, driver, '/', trip, ".csv")
         tx <- data.matrix(fread(files, header=T, sep="," ,stringsAsFactor=F))
         # tx <- Kalman_Filter(tx,1,1,12.5) #Q_metres_per_second = 50*1000/3600
-        tx <- rotate_trip(tx)
-        tx <- flip(tx)
+        tx <- flip(rotate_trip(tx))
         
         for(other in c((trip+1):200)){
             files <- paste0(datadirectory, driver, '/', other, ".csv")
@@ -224,7 +223,7 @@ for(driver in drivers){
             if(sametrip(tx,ty)){
                 d_num <- d_num + 1
                 print(paste0('Driver ',driver,' Trips Match: ', trip, ' | ', other, '!!!'))
-                plot(tx);points(ty,col='red')
+                plot(tx,col='blue');points(ty,col='red')
                 match_matrix[d_num,] <- c(driver,trip,other)    
             }        
         }
