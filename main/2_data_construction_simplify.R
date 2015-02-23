@@ -23,13 +23,13 @@ for (driver in drivers){
         # target
         target <- 0
         # speed
-        dist = sqrt(diff(trip[,1])^2 + diff(trip[,2])^2) # distance
+        dist = sqrt(diff(trip_data[,1])^2 + diff(trip_data[,2])^2) # distance
         smoothDist <- rollapply(dist, width = 5, FUN = median) # rolling median smooth
         speed <- smoothDist * 3.6
         feature_speed <- generateDistribution(speed, 'speed') # 
         # acceleration
         acceleration <- diff(speed)
-        feature_acceleration <- generateDistribution(feature_acceleration, 'acceleration')
+        feature_acceleration <- generateDistribution(acceleration, 'acceleration')
         
         # df
         main_df[d_num,] <- c(driver,trip,t(feature_speed),t(feature_acceleration),target)
