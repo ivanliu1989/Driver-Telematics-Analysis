@@ -4,8 +4,8 @@ setwd('C:/Users/Ivan.Liuyanfeng/Desktop/Data_Mining_Work_Space/DTA')
 rm(list=ls());gc()
 require(data.table)
 
-main_df[which(main_df[,'speed_100_pct']>85),c(1,2)]
-main_df[which(main_df[,'trip_distance']/main_df[,'drive_time']>85),c(1,2)]
+# main_df[which(main_df[,'speed_100_pct']>85),c(1,2)]
+# main_df[which(main_df[,'trip_distance']/main_df[,'drive_time']>85),c(1,2)]
 
 results <- (fread('submission_rf_0.81715.csv',header = T, stringsAsFactor = F))
 
@@ -19,13 +19,10 @@ results <- (fread('submission_rf_0.81715.csv',header = T, stringsAsFactor = F))
 # write.csv(results, file = 'calibra_1.csv', quote = F, row.names = F)
 
 match_matrix <- match_matrix[which(match_matrix[,1]>0),]
-results_s <- results[,Driver := strsplit(driver_trip,split = '_')[[1]][1],by=driver_trip]
+results[driver_trip %in% match_matrix,prob]
+results[driver_trip %in% match_matrix,prob:=1]
+write.csv(results, file = 'calibra_1.csv', quote = F, row.names = F)
 
-datadirectory <- 'data/drivers/'
-drivers <- sort(as.numeric(list.files(datadirectory)))
-
-# for(i in names(table(match_matrix[,1]))){
-#     tp <- as.integer(names(table(match_matrix[which(match_matrix[,1]==i),2])))
-#     results_s[Driver==i,prob:=1]
-# }
-
+### distance quantile ###
+# qdist <- seq(0.01,1, by = 0.01)
+# quantile(dist, qdist)
