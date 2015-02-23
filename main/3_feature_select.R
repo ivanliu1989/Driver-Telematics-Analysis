@@ -6,12 +6,12 @@ head(main_df)
 datadirectory <- 'data/drivers/'
 drivers <- sort(as.numeric(list.files(datadirectory)))
 driver <- 1000
-model <- 'rf'
+# model <- 'rf'
 
-#model sbf_var rfe_var
-load('Driver-Telematics-Analysis/feature_selection/rfe_var.RData')
-fitControl <- trainControl(method = "adaptive_cv",number = 10,repeats = 5,classProbs = TRUE,
-                           summaryFunction = twoClassSummary,adaptive = list(min = 12,alpha = 0.05,method = "BT",complete = TRUE))
+### model sbf_var rfe_var
+# load('Driver-Telematics-Analysis/feature_selection/rfe_var.RData')
+# fitControl <- trainControl(method = "adaptive_cv",number = 10,repeats = 5,classProbs = TRUE,
+#                            summaryFunction = twoClassSummary,adaptive = list(min = 12,alpha = 0.05,method = "BT",complete = TRUE))
 
 currentData <- main_df[main_df[,1]==driver,]
 currentData$target <- 'Yes'
@@ -20,21 +20,21 @@ refData <-  main_df[main_df[,1] %in% test_num,]
 refData$target <- 'No'
 train <- rbind(currentData, refData)
 
-g <- train(as.factor(target) ~ ., data = train[,c(rfe_var,'target')], method = model,trControl = fitControl, 
-           verbose = T, preProc = c("center", "scale"),metric = "ROC",tuneLength=12)
-p <- predict(g, newdata = currentData[,-c(1,2)], type = "prob")
+# g <- train(as.factor(target) ~ ., data = train[,c(rfe_var,'target')], method = model,trControl = fitControl, 
+#            verbose = T, preProc = c("center", "scale"),metric = "ROC",tuneLength=12)
+# p <- predict(g, newdata = currentData[,-c(1,2)], type = "prob")
 
 
 ### feature selection ### 
 # var imp
-gbmImp2 <- varImp(g, scale = F)
-gbmImp2
-plot(gbmImp2, top = 100)
-
-a_df <- data.frame(gbmImp2[1])
-nonImpCol <- rownames(a_df)[which(a_df==0)]
-nonImpCol <- gsub("`","",nonImpCol)
-main_df <- main_df[,-which(colnames(main_df) %in% nonImpCol)]
+# gbmImp2 <- varImp(g, scale = F)
+# gbmImp2
+# plot(gbmImp2, top = 100)
+# 
+# a_df <- data.frame(gbmImp2[1])
+# nonImpCol <- rownames(a_df)[which(a_df==0)]
+# nonImpCol <- gsub("`","",nonImpCol)
+# main_df <- main_df[,-which(colnames(main_df) %in% nonImpCol)]
 
 # rfe 40
 set.seed(888)
