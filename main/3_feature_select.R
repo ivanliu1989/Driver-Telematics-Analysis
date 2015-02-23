@@ -5,7 +5,7 @@ require(caret);require(data.table)
 head(main_df)
 datadirectory <- 'data/drivers/'
 drivers <- sort(as.numeric(list.files(datadirectory)))
-driver <- 1
+driver <- 1000
 model <- 'rf'
 
 #model sbf_var rfe_var
@@ -38,9 +38,9 @@ main_df <- main_df[,-which(colnames(main_df) %in% nonImpCol)]
 
 # rfe 40
 set.seed(888)
-cols <- c(5,10,20,40,60,76)
+cols <- c(5,10,20,40,60,80,120,160,180)
 ctrl <- rfeControl(functions = rfFuncs,method = "repeatedcv",repeats = 5,verbose = FALSE)
-lmProfile <- rfe(x=train[,-c(1,2,80)], y=as.factor(train$target),sizes = cols,rfeControl = ctrl)
+lmProfile <- rfe(x=train[,-c(1,2,190)], y=as.factor(train$target),sizes = cols,rfeControl = ctrl)
 lmProfile
 rfe_var <- predictors(lmProfile)
 head(lmProfile$resample)
@@ -51,12 +51,12 @@ save(rfe_var, file='rfe_var.RData')
 # sbf
 filterCtrl <- sbfControl(functions = rfSBF,method = "repeatedcv", repeats = 5)
 set.seed(10)
-rfWithFilter <- sbf(x=train[,-c(1,2,80)], y=as.factor(train$target), sbfControl = filterCtrl)
+rfWithFilter <- sbf(x=train[,-c(1,2,190)], y=as.factor(train$target), sbfControl = filterCtrl)
 rfWithFilter
 sbf_var <- predictors(rfWithFilter)
 head(rfWithFilter$resample)
 trellis.par.set(caretTheme())
-save(sbf_var, file='sbf_var.RData')
+save(sbf_var, file='sbf_var_190.RData')
 
 # GA
 library(mlbench)

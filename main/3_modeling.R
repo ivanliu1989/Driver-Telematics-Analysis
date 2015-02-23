@@ -37,7 +37,7 @@ classifier <- function(driver, model='gbm', nrOfDriversToCompare=5, features) {
 #################
 # library(doMC)
 # registerDoMC(cores = 2)
-#load('Driver-Telematics-Analysis/feature_selection/rfe_var.RData')
+load('Driver-Telematics-Analysis/feature_selection/rfe_var_190.RData')
 set.seed(888)
 fitControl <- trainControl(method = "none",number = 10,repeats = 3,classProbs = TRUE,
                            summaryFunction = twoClassSummary,adaptive = list(min = 4,alpha = 0.05,method = "BT",complete = TRUE))
