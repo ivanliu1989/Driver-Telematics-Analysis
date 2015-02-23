@@ -202,7 +202,7 @@ dist <- 2.552923e+01
 match_matrix <- matrix(0, nrow = length(drivers)*100, ncol = 2, dimnames = list(NULL, c('driver_trip', 'matched_trip')))
 start <- date()
 print(start)
-sub_drivers <- drivers[1:(length(drivers)/2)] # drivers[(length(drivers)/2+1):length(drivers)]
+sub_drivers <- drivers[(length(drivers)/2+1):length(drivers)] # drivers[1:(length(drivers)/2)]
 for(driver in sub_drivers){
     print(date())
     for (trip in 1:200){
