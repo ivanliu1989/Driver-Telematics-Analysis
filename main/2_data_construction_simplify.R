@@ -1,6 +1,4 @@
 setwd('/Users/ivan/Work_directory/DTA')
-# setwd('H:/Machine_Learning/DTA')
-# setwd('C:/Users/Ivan.Liuyanfeng/Desktop/Data_Mining_Work_Space/DTA')
 rm(list=ls());gc()
 require(data.table);require(zoo);
 source('Driver-Telematics-Analysis/main/kalman_filtering.R')
@@ -13,7 +11,7 @@ path <- "data/drivers/"
 
 ### main ###
 date(); d_num <- 0
-main_df <- matrix(0, nrow = length(drivers)*200, ncol = 109, dimnames = list(NULL, NULL))
+main_df <- matrix(0, nrow = length(drivers)*200, ncol = 43, dimnames = list(NULL, NULL))
 for (driver in drivers){
     for (trip in trips){
         
@@ -25,50 +23,24 @@ for (driver in drivers){
         # target
         target <- 0
         # speed
-        trip_distance <- distance(trip_data)
-        speed <- calcSpeed(trip_data)
-        feature_speed <- generateDistribution(speed, 'speed')
-        # sd_speed
-        sd_speed <- sd(speed, na.rm=T)
-        # avg_speed
-        avg_speed <- mean(speed, na.rm = T)
-        # avg_speed_stop
-        #         avg_speed_stop <- mean(speed[which(speed >= 0.36)], na.rm = T)
-        # drive_time
-        drive_time <- nrow(trip_data)
-        # standstill_time
-        standstill_time <- length(which(speed < 0.36))/drive_time
-        
-        # Tangential/Normal acceleration | Curvature
-        cur <- calcCurvature(trip_data,1) #
-        tanAcc <- calcTangAccel(trip_data) #
-        norAcc <- calcNormAccel(speed,cur) #
-        feature_tanAcc <- generateDistribution(tanAcc,'tanAcc')
-        feature_norAcc <- generateDistribution(norAcc,'norAcc')
-        feature_totAcc <- TotalAccelDistribution(tanAcc,norAcc)
-        feature_curvature <- curvatureDistribution(cur)
-        sd_tanAcc <- sd(tanAcc,na.rm = T)
-        sd_norAcc <- sd(norAcc,na.rm = T)
-        
+        dist = sqrt(diff(trip[,1])^2 + diff(trip[,2])^2) # distance
+        smoothDist <- rollapply(dist, width = 5, FUN = median) # rolling median smooth
+        speed <- smoothDist * 3.6
+        feature_speed <- generateDistribution(speed, 'speed') # 
+        # acceleration
+        acceleration <- diff(speed)
+        feature_acceleration <- generateDistribution(feature_acceleration, 'acceleration')
         
         # df
-        main_df[d_num,] <- c(driver,trip,trip_distance,t(feature_speed),sd_speed,avg_speed,standstill_time,t(feature_tanAcc),t(feature_norAcc),
-                             t(feature_totAcc),t(feature_curvature),sd_tanAcc,sd_norAcc,target)
+        main_df[d_num,] <- c(driver,trip,t(feature_speed),t(feature_acceleration),target)
         
         if (trip==200) {
             print(paste0(files, ' | ', date(), ' | ', d_num/(length(drivers)*200)*100)) 
         }
     }
 }
-for (i in 1:218){
-    if(sum(is.na(main_df[,i]))>0){
-        print(i)
-    }   
-}
-main_df <- data.frame(main_df,stringsAsFactors = F)
-names(main_df) <- c('driver','trip','trip_distance',names(feature_speed),'sd_speed','avg_speed','standstill_time',names(feature_tanAcc),names(feature_norAcc),
-                    names(feature_totAcc),names(feature_curvature),'sd_tanAcc','target')
-dim(main_df);head(main_df)
 
-save(main_df, file='data/main_df_109features.RData')
-write.csv(main_df, file = 'data/main_df_109features.csv', quote = F, row.names = F)
+main_df <- data.frame(main_df,stringsAsFactors = F)
+names(main_df) <- c('driver','trip',names(feature_speed),names(feature_acceleration),'target')
+
+save(main_df, file='data/main_df_43features.RData')
