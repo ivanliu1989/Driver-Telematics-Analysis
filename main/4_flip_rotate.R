@@ -196,10 +196,10 @@ sametrip <- function(tx,ty){
 ########################
 ### Detect Same Trip ###
 ########################
-threshold <- 0.05
+threshold <- 0.03
 d_num <- 0
 dist <- 2.552923e+01
-match_matrix <- matrix(0, nrow = length(drivers)*100, ncol = 2, dimnames = list(NULL, NULL))
+match_matrix <- matrix(0, nrow = length(drivers)*100, ncol = 2, dimnames = list(NULL, c('driver_trip', 'matched_trip')))
 start <- date()
 print(start)
 for(driver in drivers){
@@ -225,6 +225,10 @@ for(driver in drivers){
                         print(paste0('Driver ',driver,' Trips Match: ', trip, ' | ', other, '!!!'))
                         plot(tx,col='blue');points(ty,col='red')
                         match_matrix[d_num,] <- c(paste0(driver,'_',trip),other)    
+                        
+                        if(d_num %% 1000 == 0 ){
+                            save(match_matrix, file=paste0('repeated_map_driver_',driver,'num_',d_num,'.RData'))
+                        }
                     }   
                 }   
             }
