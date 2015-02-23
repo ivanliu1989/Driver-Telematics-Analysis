@@ -21,7 +21,7 @@ results <- (fread('submission_rf_0.81715.csv',header = T, stringsAsFactor = F))
 match_matrix <- match_matrix[which(match_matrix[,1]>0),]
 results[driver_trip %in% match_matrix,prob]
 results[driver_trip %in% match_matrix,prob:=1]
-write.csv(results, file = 'calibra_1.csv', quote = F, row.names = F)
+write.csv(results, file = 'calibra_2k.csv', quote = F, row.names = F)
 
 ### distance quantile ###
 # qdist <- seq(0.01,1, by = 0.01)

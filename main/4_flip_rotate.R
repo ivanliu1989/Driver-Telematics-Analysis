@@ -202,7 +202,8 @@ dist <- 2.552923e+01
 match_matrix <- matrix(0, nrow = length(drivers)*100, ncol = 2, dimnames = list(NULL, c('driver_trip', 'matched_trip')))
 start <- date()
 print(start)
-for(driver in drivers){
+sub_drivers <- drivers[1:(length(drivers)/2)] # drivers[(length(drivers)/2+1):length(drivers)]
+for(driver in sub_drivers){
     print(date())
     for (trip in 1:200){
         if(trip >= 200){
@@ -226,8 +227,8 @@ for(driver in drivers){
                         plot(tx,col='blue');points(ty,col='red')
                         match_matrix[d_num,] <- c(paste0(driver,'_',trip),other)    
                         
-                        if(d_num %% 1000 == 0 ){
-                            save(match_matrix, file=paste0('repeated_map_driver_',driver,'num_',d_num,'.RData'))
+                        if(d_num %% 5000 == 0 ){
+                            save(match_matrix, file=paste0('repeated_map_thereshold_',threshold,'_driver_',driver,'_num_',d_num,'.RData'))
                         }
                     }   
                 }   
