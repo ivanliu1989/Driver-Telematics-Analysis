@@ -198,7 +198,7 @@ sametrip <- function(tx,ty){
 ########################
 threshold <- 0.05
 d_num <- 0
-match_matrix <- matrix(0, nrow = length(drivers)*100, ncol = 3, dimnames = list(NULL, NULL))
+match_matrix <- matrix(0, nrow = length(drivers)*100, ncol = 2, dimnames = list(NULL, NULL))
 start <- date()
 print(start)
 for(driver in drivers){
@@ -207,25 +207,26 @@ for(driver in drivers){
         if(trip >= 200){
             break
         }
-        
-        # print(paste0('Driver: ', driver, ' Trip: ', trip))
-        files <- paste0(datadirectory, driver, '/', trip, ".csv")
-        tx <- data.matrix(fread(files, header=T, sep="," ,stringsAsFactor=F))
-        # tx <- Kalman_Filter(tx,1,1,12.5) #Q_metres_per_second = 50*1000/3600
-        tx <- flip(rotate_trip(tx))
-        
-        for(other in c((trip+1):200)){
-            files <- paste0(datadirectory, driver, '/', other, ".csv")
-            ty <- data.matrix(fread(files, header=T, sep="," ,stringsAsFactor=F))
-            # ty <- Kalman_Filter(ty,1,1,12.5) #Q_metres_per_second = 50*1000/3600
-            ty <- flip(rotate_trip(ty))
+        if(distance(trip)>100){
+            # print(paste0('Driver: ', driver, ' Trip: ', trip))
+            files <- paste0(datadirectory, driver, '/', trip, ".csv")
+            tx <- data.matrix(fread(files, header=T, sep="," ,stringsAsFactor=F))
+            # tx <- Kalman_Filter(tx,1,1,12.5) #Q_metres_per_second = 50*1000/3600
+            tx <- flip(rotate_trip(tx))
             
-            if(sametrip(tx,ty)){
-                d_num <- d_num + 1
-                print(paste0('Driver ',driver,' Trips Match: ', trip, ' | ', other, '!!!'))
-                plot(tx,col='blue');points(ty,col='red')
-                match_matrix[d_num,] <- c(driver,trip,other)    
-            }        
+            for(other in c((trip+1):200)){
+                files <- paste0(datadirectory, driver, '/', other, ".csv")
+                ty <- data.matrix(fread(files, header=T, sep="," ,stringsAsFactor=F))
+                # ty <- Kalman_Filter(ty,1,1,12.5) #Q_metres_per_second = 50*1000/3600
+                ty <- flip(rotate_trip(ty))
+                
+                if(sametrip(tx,ty)){
+                    d_num <- d_num + 1
+                    print(paste0('Driver ',driver,' Trips Match: ', trip, ' | ', other, '!!!'))
+                    plot(tx,col='blue');points(ty,col='red')
+                    match_matrix[d_num,] <- c(paste0(driver,'_',trip),other)    
+                }        
+            }
         }
     }
 }
