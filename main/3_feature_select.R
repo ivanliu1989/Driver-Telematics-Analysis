@@ -9,9 +9,9 @@ driver <- 1000
 # model <- 'rf'
 
 ### model sbf_var rfe_var
-# load('Driver-Telematics-Analysis/feature_selection/rfe_var.RData')
-# fitControl <- trainControl(method = "adaptive_cv",number = 10,repeats = 5,classProbs = TRUE,
-#                            summaryFunction = twoClassSummary,adaptive = list(min = 12,alpha = 0.05,method = "BT",complete = TRUE))
+# load('Driver-Telematics-Analysis/feature_selection/rfe_var_190.RData')
+fitControl <- trainControl(method = "adaptive_cv",number = 10,repeats = 10,classProbs = TRUE,
+                           summaryFunction = twoClassSummary,adaptive = list(min = 16,alpha = 0.05,method = "BT",complete = TRUE))
 
 currentData <- main_df[main_df[,1]==driver,]
 currentData$target <- 'Yes'
@@ -20,8 +20,8 @@ refData <-  main_df[main_df[,1] %in% test_num,]
 refData$target <- 'No'
 train <- rbind(currentData, refData)
 
-# g <- train(as.factor(target) ~ ., data = train[,c(rfe_var,'target')], method = model,trControl = fitControl, 
-#            verbose = T, preProc = c("center", "scale"),metric = "ROC",tuneLength=12)
+g <- train(as.factor(target) ~ ., data = train[,c(rfe_var,'target')], method = model,trControl = fitControl, 
+           verbose = T,metric = "ROC",tuneLength=16) #preProc = c("center", "scale")
 # p <- predict(g, newdata = currentData[,-c(1,2)], type = "prob")
 
 
@@ -46,7 +46,7 @@ rfe_var <- predictors(lmProfile)
 head(lmProfile$resample)
 trellis.par.set(caretTheme())
 plot(lmProfile, type = c("g", "o"))
-save(rfe_var, file='rfe_var.RData')
+save(rfe_var, file='rfe_var_190_2.RData')
 
 # sbf
 filterCtrl <- sbfControl(functions = rfSBF,method = "repeatedcv", repeats = 5)
