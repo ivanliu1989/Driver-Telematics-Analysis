@@ -51,6 +51,10 @@ calcNormAccel <- function(sp,cur,nlag) {
     accel_fps2 = (sp^2) / cur[,3]
     return(accel_fps2)
 }
+calcNormAccel2 <- function(sp,cur,nlag) {
+    accel_fps2 = (sp^2) / cur
+    return(accel_fps2)
+}
 
 # Total acceleration 
 totalAccel <- function(accel_fps2_tang,accel_fps2_norm){
@@ -90,6 +94,18 @@ calcCurvature <- function(trip,nlag) {
 # Curvature Distribution
 curvatureDistribution <- function(cur){
     radius = cur[,3]
+    values <- radius[is.finite(radius)]
+    tryCatch(rtn<-generateDistribution(values,'cur'), 
+             error = function(e) {
+                 e
+                 generateDistribution(values,'cur')
+                 rtn<-NULL
+             }
+    )
+    return(rtn)  
+}
+curvatureDistribution2 <- function(cur){
+    radius = cur
     values <- radius[is.finite(radius)]
     tryCatch(rtn<-generateDistribution(values,'cur'), 
              error = function(e) {
