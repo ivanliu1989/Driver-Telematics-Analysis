@@ -25,7 +25,7 @@ classifier <- function(driver, model='gbm', nrOfDriversToCompare=5, features) {
     
     #model
     g <- train(x = data.matrix(train[,c(features)]), y = as.factor(train$target), method = model,trControl = fitControl, 
-                tuneLength = 6,metric = "ROC",tuneGrid = gbmGrid)#preProc = c("center", "scale")
+                tuneLength = 6,metric = "ROC",tuneGrid = gbmGrid,preProc = c("center", "scale"))
     p <- predict(g, newdata = data.matrix(currentData[,c(features)]), type = "prob")
     
     result <- data.frame(driver_trip=paste0(currentData[,1],'_',currentData[,2],sep=''), prob=p$Yes)
@@ -41,8 +41,8 @@ load('Driver-Telematics-Analysis/feature_selection/rfe_var_190.RData')
 set.seed(888)
 fitControl <- trainControl(method = "none",number = 10,repeats = 3,classProbs = TRUE,
                            summaryFunction = twoClassSummary,adaptive = list(min = 4,alpha = 0.05,method = "BT",complete = TRUE))
-gbmGrid <-  expand.grid(mtry=2)
-feature_list <- sbf_var
+gbmGrid <-  expand.grid(mtry=30)
+feature_list <- colnames(main_df[,-c(1,2,190)])
 submission <- data.frame()
 
 for (driver in drivers){
