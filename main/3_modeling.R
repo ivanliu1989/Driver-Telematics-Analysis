@@ -41,7 +41,7 @@ load('Driver-Telematics-Analysis/feature_selection/rfe_var_190.RData')
 set.seed(888)
 fitControl <- trainControl(method = "none",number = 10,repeats = 3,classProbs = TRUE,
                            summaryFunction = twoClassSummary,adaptive = list(min = 4,alpha = 0.05,method = "BT",complete = TRUE))
-gbmGrid <-  expand.grid(mtry=2)
+gbmGrid <-  expand.grid(mtry=17)
 feature_list <- colnames(main_df[,-c(1,2,172)])
 submission <- data.frame()
 
@@ -52,5 +52,5 @@ for (driver in drivers){
     submission <- rbind(submission, result)
 }
 
-write.csv(submission, file = 'submission_rf_190_sbf_var_160.csv', quote = F, row.names = F)
+write.csv(submission, file = 'submission_rf_172_17.csv', quote = F, row.names = F)
 sum(is.na(submission))
