@@ -7,7 +7,7 @@ require(data.table)
 # main_df[which(main_df[,'speed_100_pct']>85),c(1,2)]
 # main_df[which(main_df[,'trip_distance']/main_df[,'drive_time']>85),c(1,2)]
 
-results <- (fread('submission_rf_0.81715.csv',header = T, stringsAsFactor = F))
+results <- (fread('submission_knn_172_13_0.84917.csv',header = T, stringsAsFactor = F))
 
 # results[which(main_df[,'speed_100_pct']>85),2] <- 0
 # results[which(main_df[,'trip_distance']/main_df[,'drive_time']>85),2] <- 0

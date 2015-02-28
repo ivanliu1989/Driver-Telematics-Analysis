@@ -6,7 +6,7 @@ head(main_df)
 datadirectory <- 'data/drivers/'
 drivers <- sort(as.numeric(list.files(datadirectory)))
 driver <- 2048
-model <- 'rf'
+model <- 'gbm'
 
 set.seed(888)
 fitControl <- trainControl(method = "adaptive_cv",number = 10,repeats = 5,classProbs = TRUE,
@@ -20,7 +20,7 @@ refData$target <- 'No'
 train <- rbind(currentData, refData)
 
 g <- train(x = data.matrix(train[,-c(1,2,172)]), y = as.factor(train$target), method = model, trControl = fitControl, 
-           metric = "ROC", tuneLength=12, verbose=F) #preProc = c("center", "scale"), 
+           metric = "ROC", tuneLength=12, verbose=T,preProc = c("center", "scale")) 
 p <- predict(g, newdata = data.matrix(currentData[,-c(1,2,80)]), type = "prob")
 
 ### Models:
