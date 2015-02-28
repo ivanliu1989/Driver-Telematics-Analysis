@@ -41,12 +41,12 @@ load('Driver-Telematics-Analysis/feature_selection/rfe_var_190.RData')
 set.seed(88)
 fitControl <- trainControl(method = "none",number = 10,repeats = 3,classProbs = TRUE,
                            summaryFunction = twoClassSummary,adaptive = list(min = 4,alpha = 0.05,method = "BT",complete = TRUE))
-gbmGrid <-  expand.grid(n.trees = 150, interaction.depth = 2,shrinkage = 0.1 )
+gbmGrid <-  expand.grid(n.trees = 450, interaction.depth = 8,shrinkage = 0.1 )
 feature_list <- colnames(main_df[,-c(1,2,172)])
 submission <- data.frame()
 
 for (driver in drivers){
-    result <- classifier(driver,'knn',5,feature_list)
+    result <- classifier(driver,'gbm',5,feature_list)
     print(paste0('driver: ', driver, ' | ' ,date())) 
     
     submission <- rbind(submission, result)
