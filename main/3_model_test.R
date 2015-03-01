@@ -6,11 +6,11 @@ head(main_df)
 datadirectory <- 'data/drivers/'
 drivers <- sort(as.numeric(list.files(datadirectory)))
 driver <- 2048
-model <- 'gbm'
+model <- 'svmLinear'
 
 set.seed(888)
 fitControl <- trainControl(method = "adaptive_cv",number = 10,repeats = 5,classProbs = TRUE,
-                           summaryFunction = twoClassSummary,adaptive = list(min = 12,alpha = 0.05,method = "BT",complete = TRUE))
+                           summaryFunction = twoClassSummary,adaptive = list(min = 6,alpha = 0.05,method = "BT",complete = TRUE))
 
 currentData <- main_df[main_df[,1]==driver,]
 currentData$target <- 'Yes'
@@ -20,7 +20,7 @@ refData$target <- 'No'
 train <- rbind(currentData, refData)
 
 g <- train(x = data.matrix(train[,-c(1,2,172)]), y = as.factor(train$target), method = model, trControl = fitControl, 
-           metric = "ROC", tuneLength=12, verbose=T,preProc = c("center", "scale")) 
+           metric = "ROC", tuneLength=6, verbose=T,preProc = c("center", "scale")) 
 p <- predict(g, newdata = data.matrix(currentData[,-c(1,2,80)]), type = "prob")
 
 ### Models:
