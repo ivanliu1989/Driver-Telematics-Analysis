@@ -43,11 +43,11 @@ nzv[nzv$nzv,][1:10,]
 #########################################
 ### Identifying Correlated Predictors ###
 #########################################
-descrCor <- cor(main_df[,-c(1,2,136)])
+descrCor <- cor(main_df[,-c(1,2,172)])
 summary(descrCor[upper.tri(descrCor)])
 
 highlyCorDescr <- findCorrelation(descrCor, cutoff = .99)
-highlyCorName <- colnames(main_df[,-c(1,2,136)][,highlyCorDescr])
+highlyCorName <- colnames(main_df[,-c(1,2,172)][,highlyCorDescr])
 head(main_df[,highlyCorName])
 main_df <- main_df[,-which(colnames(main_df) %in% highlyCorName)]
 colnames(main_df)
@@ -55,8 +55,8 @@ colnames(main_df)
 ###########################
 ### Linear Dependencies ###
 ###########################
-comboInfo <- findLinearCombos(main_df[,-c(1,2,136)])
-colnames(main_df[,-c(1,2,136)][,comboInfo$remove])
+comboInfo <- findLinearCombos(main_df[,-c(1,2,172)])
+colnames(main_df[,-c(1,2,172)][,comboInfo$remove])
 main_df[, -comboInfo$remove]
 
 #############################
