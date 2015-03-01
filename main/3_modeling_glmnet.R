@@ -21,9 +21,9 @@ classifier <- function(driver, model='gbm', nrOfDriversToCompare=5, features) {
     train <- rbind(currentData, refData)
     
     #model
-    g <- glmnet(x = data.matrix(train[,-c(1,2,125)]), y = data.matrix(train$target),family = "binomial", alpha = 0.5, 
+    g <- glmnet(x = data.matrix(train[,c(features)]), y = data.matrix(train$target),family = "binomial", alpha = 0.5, 
                 standardize = T, intercept = T, type.logistic = "Newton")
-    p <- predict(g, newx = data.matrix(currentData[,-c(1,2,125)]), type = "response")
+    p <- predict(g, newx = data.matrix(currentData[,c(features)]), type = "response")
     
     result <- data.frame(driver_trip=paste0(currentData[,1],'_',currentData[,2],sep=''), prob=p[,dim(p)[2]])
     return(result)
@@ -37,8 +37,7 @@ classifier <- function(driver, model='gbm', nrOfDriversToCompare=5, features) {
 # load('Driver-Telematics-Analysis/feature_selection/rfe_var_190.RData')
 set.seed(88)
 
-feature_list <- colnames(main_df[,-c(23,84:107,148:169)]) # 1, 2, 172
-main_df <- main_df[,c(feature_list)]
+feature_list <- colnames(main_df[,-c(1,2,23,84:107,148:169,172)])
 submission <- data.frame()
 
 for (driver in drivers){
