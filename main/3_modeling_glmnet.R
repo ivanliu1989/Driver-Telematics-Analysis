@@ -1,7 +1,7 @@
 # setwd('H:/Machine_Learning/DTA')
 setwd('/Users/ivan/Work_directory/DTA')
 rm(list=ls());gc()
-require(caret);require(data.table)
+require(glmnet);require(data.table)
 
 # main_df <- data.frame(fread('data/main_df_182features.csv',header = T, stringsAsFactor = F))
 # load(file='data/main_df_138features.RData')
@@ -14,21 +14,18 @@ drivers <- sort(as.numeric(list.files(datadirectory)))
 ##################
 classifier <- function(driver, model='gbm', nrOfDriversToCompare=5, features) {
     currentData <- main_df[main_df[,1]==driver,]
-    currentData$target <- 'Yes'
-    
+    currentData$target <- 1
     test_num <- sample(drivers[which(drivers!=driver)],nrOfDriversToCompare)
-    
     refData <-  main_df[main_df[,1] %in% test_num,]
-#     refData <-  result_centriods
-    refData$target <- 'No'
+    refData$target <- 0
     train <- rbind(currentData, refData)
     
     #model
-    g <- train(x = data.matrix(train[,c(features)]), y = as.factor(train$target), method = model,trControl = fitControl, 
-                tuneLength = 6,metric = "ROC",preProc = c("center", "scale"))#,tuneGrid = gbmGrid)#
-    p <- predict(g, newdata = data.matrix(currentData[,c(features)]), type = "prob")
+    g <- glmnet(x = data.matrix(train[,-c(1,2,125)]), y = data.matrix(train$target),family = "binomial", alpha = 0.5, 
+                standardize = T, intercept = T, type.logistic = "Newton")
+    p <- predict(g, newx = data.matrix(currentData[,-c(1,2,125)]), type = "response")
     
-    result <- data.frame(driver_trip=paste0(currentData[,1],'_',currentData[,2],sep=''), prob=p$Yes)
+    result <- data.frame(driver_trip=paste0(currentData[,1],'_',currentData[,2],sep=''), prob=p[,dim(p)[2]])
     return(result)
 }
 
@@ -39,14 +36,13 @@ classifier <- function(driver, model='gbm', nrOfDriversToCompare=5, features) {
 # registerDoMC(cores = 2)
 # load('Driver-Telematics-Analysis/feature_selection/rfe_var_190.RData')
 set.seed(88)
-fitControl <- trainControl(method = "none",number = 10,repeats = 3,classProbs = TRUE,
-                           summaryFunction = twoClassSummary,adaptive = list(min = 4,alpha = 0.05,method = "BT",complete = TRUE))
-gbmGrid <-  expand.grid(mtry=17)
-feature_list <- colnames(main_df[,-c(1,2,23,84:107,148:169,172)])
+
+feature_list <- colnames(main_df[,-c(23,84:107,148:169)]) # 1, 2, 172
+main_df <- main_df[,c(feature_list)]
 submission <- data.frame()
 
 for (driver in drivers){
-    result <- classifier(driver,'glm',5,feature_list)
+    result <- classifier(driver,'glmnet',5,feature_list)
     print(paste0('driver: ', driver, ' | ' ,date())) 
     
     submission <- rbind(submission, result)

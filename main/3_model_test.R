@@ -6,7 +6,7 @@ head(main_df)
 datadirectory <- 'data/drivers/'
 drivers <- sort(as.numeric(list.files(datadirectory)))
 driver <- 2048
-model <- 'svmLinear'
+model <- 'glm'
 
 set.seed(888)
 fitControl <- trainControl(method = "adaptive_cv",number = 10,repeats = 5,classProbs = TRUE,
@@ -18,9 +18,10 @@ test_num <- sample(drivers[which(drivers!=driver)],5)
 refData <-  main_df[main_df[,1] %in% test_num,]
 refData$target <- 'No'
 train <- rbind(currentData, refData)
+feature_list <- colnames(main_df[,-c(1,2,23,84:107,148:169,172)])
 
-g <- train(x = data.matrix(train[,-c(1,2,172)]), y = as.factor(train$target), method = model, trControl = fitControl, 
-           metric = "ROC", tuneLength=6, verbose=T,preProc = c("center", "scale")) 
+g <- train(x = data.matrix(train[,c(feature_list)]), y = as.factor(train$target), method = model, trControl = fitControl, 
+           metric = "ROC", tuneLength=6, preProc = c("center", "scale"))  #verbose=T,
 p <- predict(g, newdata = data.matrix(currentData[,-c(1,2,80)]), type = "prob")
 
 ### Models:
