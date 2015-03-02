@@ -47,5 +47,5 @@ for (driver in drivers){
     submission <- rbind(submission, result)
 }
 
-write.csv(submission, file = 'submission_gbm_172_20.csv', quote = F, row.names = F)
+write.csv(submission, file = 'submission_glmnet_172_Newton.csv', quote = F, row.names = F)
 sum(is.na(submission))

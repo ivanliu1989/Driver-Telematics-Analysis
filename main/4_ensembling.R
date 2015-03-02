@@ -36,7 +36,7 @@ require(data.table)
 # write.csv(ensemble, file = 'en18.csv', quote = F, row.names = F)
 
 ### Auto ###
-datadirectory <- 'results/best' # 'results/best'
+datadirectory <- 'results' # 'results/best'
 files <- list.files(datadirectory,full.names = T)
 i <- 0
 ensem_prob <- matrix(0, nrow = 547200, ncol = 1, dimnames = list(NULL, NULL))
@@ -49,7 +49,7 @@ for(file in files[-1]){
 
 final_prob <- ensem_prob/i
 ensemble <- data.frame(driver_trip=result[,1], prob=final_prob)
-write.csv(ensemble, file = 'best_8.csv', quote = F, row.names = F)
+write.csv(ensemble, file = 'First_try_40.csv', quote = F, row.names = F)
 
 ### repeat ###
 load('Driver-Telematics-Analysis/repeated_trips/repeated_map_thereshold_0.03_driver_1_2173.RData')
@@ -58,5 +58,5 @@ match_matrix <- match_matrix[which(match_matrix[,1]>0),]
 ensemble <- data.table(ensemble)
 ensemble[driver_trip %in% match_matrix[,1],prob]
 ensemble[driver_trip %in% match_matrix[,1],prob:=1]
-write.csv(ensemble, file = 'best_8_repeated.csv', quote = F, row.names = F)
+write.csv(ensemble, file = 'First_try_40_repeated.csv', quote = F, row.names = F)
 

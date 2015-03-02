@@ -40,3 +40,6 @@ for (i in trip){
 # 393      2  193
 # 551      3  151
 # 589      3  189
+
+plot(trip_data)
+points(trip_data[-1,][which(heading>=90),],col='red')

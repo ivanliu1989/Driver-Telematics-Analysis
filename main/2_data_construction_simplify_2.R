@@ -47,6 +47,9 @@ for (driver in drivers){
         #         sd_cur <- sd(cur[which(cur<=100)],na.rm = T)
         #         sd_totAcc <- sd(totAcc,na.rm = T)
         
+        # heading
+        #polar <- Cartesian_to_Polar(trip_data,5)
+        #heading <- degree_cal(polar)
         
         # acceleration
         #         adceleration <- diff(speed)

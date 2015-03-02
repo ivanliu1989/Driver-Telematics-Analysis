@@ -143,19 +143,19 @@ removeAccOutliers <- function(totAcc,tanAcc,norAcc, limits=9.8){
     return(acc)
 } 
 
-# # Cartesian to Polar coordinates
-# Cartesian_to_Polar <- function(trip,nlag){
-#     r <- sqrt(diff(trip[,2],lag=nlag)^2 + diff(trip[,1],lag=nlag)^2)
-#     theta <- atan2(diff(trip[,2],lag=nlag),diff(trip[,1],lag=nlag))
-#     Polar <- matrix(0, nrow = length(theta), ncol = 2, dimnames = list(NULL, c("r", "theta")))
-#     Polar[,1] <- r
-#     Polar[,2] <- theta
-#     return(Polar)
-# }
-# 
-# # Heading degree
-# degree_cal <- function(polar){
-#     degrees <- abs(polar[,2] * 180 / pi)
-#     return(degrees)
-# }
+# Cartesian to Polar coordinates
+Cartesian_to_Polar <- function(trip,nlag){
+    r <- sqrt(diff(trip[,2],lag=nlag)^2 + diff(trip[,1],lag=nlag)^2)
+    theta <- atan2(diff(trip[,2],lag=nlag),diff(trip[,1],lag=nlag))
+    Polar <- matrix(0, nrow = length(theta), ncol = 2, dimnames = list(NULL, c("r", "theta")))
+    Polar[,1] <- r
+    Polar[,2] <- theta
+    return(Polar)
+}
+
+# Heading degree
+degree_cal <- function(polar){
+    degrees <- abs(polar[,2] * 180 / pi)
+    return(degrees)
+}
 
