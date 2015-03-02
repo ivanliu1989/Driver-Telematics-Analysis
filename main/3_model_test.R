@@ -6,7 +6,7 @@ head(main_df)
 datadirectory <- 'data/drivers/'
 drivers <- sort(as.numeric(list.files(datadirectory)))
 driver <- 2048
-model <- 'glm'
+model <- 'svmRadial'
 
 set.seed(888)
 fitControl <- trainControl(method = "adaptive_cv",number = 10,repeats = 5,classProbs = TRUE,
