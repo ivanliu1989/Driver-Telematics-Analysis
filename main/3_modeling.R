@@ -25,7 +25,7 @@ classifier <- function(driver, model='gbm', nrOfDriversToCompare=5, features) {
     
     #model
     g <- train(x = data.matrix(train[,c(features)]), y = as.factor(train$target), method = model,trControl = fitControl, 
-                tuneLength = 6,metric = "ROC",preProc = c("center", "scale"))#,tuneGrid = gbmGrid)#
+                tuneLength = 6,metric = "ROC",preProc = c("center", "scale"),tuneGrid = gbmGrid))
     p <- predict(g, newdata = data.matrix(currentData[,c(features)]), type = "prob")
     
     result <- data.frame(driver_trip=paste0(currentData[,1],'_',currentData[,2],sep=''), prob=p$Yes)
@@ -41,12 +41,12 @@ classifier <- function(driver, model='gbm', nrOfDriversToCompare=5, features) {
 set.seed(88)
 fitControl <- trainControl(method = "none",number = 10,repeats = 3,classProbs = TRUE,
                            summaryFunction = twoClassSummary,adaptive = list(min = 4,alpha = 0.05,method = "BT",complete = TRUE))
-gbmGrid <-  expand.grid(mtry=17)
+gbmGrid <-  expand.grid(C = 16)
 feature_list <- colnames(main_df[,-c(1,2,23,84:107,148:169,172)])
 submission <- data.frame()
 
 for (driver in drivers){
-    result <- classifier(driver,'glm',5,feature_list)
+    result <- classifier(driver,'svmRadial',5,feature_list)
     print(paste0('driver: ', driver, ' | ' ,date())) 
     
     submission <- rbind(submission, result)

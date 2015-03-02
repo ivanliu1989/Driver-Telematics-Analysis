@@ -10,7 +10,7 @@ model <- 'svmRadial'
 
 set.seed(888)
 fitControl <- trainControl(method = "adaptive_cv",number = 10,repeats = 5,classProbs = TRUE,
-                           summaryFunction = twoClassSummary,adaptive = list(min = 6,alpha = 0.05,method = "BT",complete = TRUE))
+                           summaryFunction = twoClassSummary,adaptive = list(min = 8,alpha = 0.05,method = "BT",complete = TRUE))
 
 currentData <- main_df[main_df[,1]==driver,]
 currentData$target <- 'Yes'
@@ -21,7 +21,7 @@ train <- rbind(currentData, refData)
 feature_list <- colnames(main_df[,-c(1,2,23,84:107,148:169,172)])
 
 g <- train(x = data.matrix(train[,c(feature_list)]), y = as.factor(train$target), method = model, trControl = fitControl, 
-           metric = "ROC", tuneLength=6, preProc = c("center", "scale"))  #verbose=T,
+           metric = "ROC", tuneLength=8, preProc = c("center", "scale"))  #verbose=T,
 p <- predict(g, newdata = data.matrix(currentData[,-c(1,2,80)]), type = "prob")
 
 ### Models:
