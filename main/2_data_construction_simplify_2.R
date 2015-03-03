@@ -44,7 +44,7 @@ for (driver in drivers){
         cur <- calcCurvature(trip_data,1)[jp,] # zero
 #         cur <- Cartesian_to_Polar(trip_data,5)[jp,]
 #         degree <- degree_cal(cur)
-        
+#         r <- Cartesian_to_Polar(trip_data,1)[jp]
         angle <- degree_cal(Cartesian_to_Polar(trip_data,2),2)[jp]
 #         tp <- which(cur[,3] <= 100)
         tp <- which(angle >= 15) # plot(trip_data);points(trip_data[jp,][tp,],col='red')
