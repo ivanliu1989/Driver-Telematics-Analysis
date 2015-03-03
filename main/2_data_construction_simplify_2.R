@@ -36,16 +36,16 @@ for (driver in drivers){
         # avg_speed_stop
         avg_speed_stop <- mean(speed[which(speed > 0)], na.rm = T) # zero 
         # drive_time
-        drive_time <- nrow(trip_data)
+#         drive_time <- nrow(trip_data)
         # standstill_time
-        standstill_time <- length(which(speed == 0))/drive_time
+        standstill_time <- length(which(speed == 0))/length(speed)
         
         # Tangential/Normal acceleration | Curvature
         cur <- calcCurvature(trip_data,1)[jp,] # zero
 #         cur <- Cartesian_to_Polar(trip_data,5)[jp,]
 #         degree <- degree_cal(cur)
         
-        tp <- which(cur[,3]<=100)
+        tp <- which(cur[,3]<=100) # plot(trip_data);points(trip_data[tp,],col='red')
         tanAcc <- calcTangAccel(trip_data,1)[jp][tp] #
         norAcc <- calcNormAccel(speed[tp],cur[tp,3]) # zero
         totAcc <- totalAccel(tanAcc,norAcc) # zero
@@ -89,7 +89,7 @@ for (driver in drivers){
         acc_time <- length(acceleration)/length(adceleration)
         #         cons_time <- length(constant)/length(adceleration)
         ex_acc <- adceleration[which(adceleration>= 3)]
-        ex_acc_time <- length(ex_acc)/length(totAcc)
+        ex_acc_time <- length(ex_acc)/length(adceleration)
         ex_dec <- adceleration[which(adceleration<= -3)]
         ex_dec_time <- length(ex_dec)/length(adceleration)
         

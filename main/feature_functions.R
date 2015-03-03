@@ -159,7 +159,7 @@ removeAccOutliers <- function(totAcc,tanAcc,norAcc, limits=9.8){
 
 removeAccOutliers2 <- function(totAcc,tanAcc,norAcc, limits=9.8){
     tanAcc <- tanAcc[-which(totAcc>limits)]
-    norAcc <- totAcc[-which(totAcc>limits)]
+    norAcc <- norAcc[-which(totAcc>limits)]
     totAcc <- totAcc[-which(totAcc>limits)]
     
     acc <- data.matrix(data.table(totAcc = totAcc,tanAcc = tanAcc, norAcc = norAcc))
