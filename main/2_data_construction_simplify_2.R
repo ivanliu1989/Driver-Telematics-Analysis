@@ -13,7 +13,7 @@ path <- "data/drivers/"
 
 ### main ###
 date(); d_num <- 0
-main_df <- matrix(0, nrow = length(drivers)*200, ncol = 189, dimnames = list(NULL, NULL))
+main_df <- matrix(0, nrow = length(drivers)*200, ncol = 187, dimnames = list(NULL, NULL))
 sp_limits <- 280/3.6
 for (driver in drivers){
     for (trip in trips){
@@ -41,16 +41,18 @@ for (driver in drivers){
         standstill_time <- length(which(speed == 0))/length(speed)
         
         # Tangential/Normal acceleration | Curvature
-        cur <- calcCurvature(trip_data,1)[jp,] # zero
+#         cur <- calcCurvature(trip_data,2)[jp,] # zero
 #         cur <- Cartesian_to_Polar(trip_data,5)[jp,]
 #         degree <- degree_cal(cur)
-#         r <- Cartesian_to_Polar(trip_data,1)[jp]
-        angle <- degree_cal(Cartesian_to_Polar(trip_data,2),2)[jp]
+        rp <- detectJumps(Cartesian_to_Polar(trip_data,2)[,1],sp_limits*2)
+        r <- Cartesian_to_Polar(trip_data,2)[rp,]
+        angle <- degree_cal(r,2)
 #         tp <- which(cur[,3] <= 100)
         tp <- which(angle >= 15) # plot(trip_data);points(trip_data[jp,][tp,],col='red')
         
-        tanAcc <- calcTangAccel(trip_data,1)[jp][tp] #
-        norAcc <- calcNormAccel(speed[tp],cur[tp,3]) # zero
+        tanAcc <- calcTangAccel(trip_data,2)[rp][tp] #
+        norAcc <- calcNormAccel(speed[tp],r[tp]) # zero
+        norAcc[which(norAcc == Inf)] <- 0
         totAcc <- totalAccel(tanAcc,norAcc) # zero
 #         smoothAcc <- removeAccOutliers2(totAcc,tanAcc,norAcc,9.8) # smooth three Acc
 #         tanAcc <- smoothAcc[,1] #
@@ -65,11 +67,11 @@ for (driver in drivers){
         
         sd_tanAcc <- sd(tanAcc,na.rm = T)
         sd_norAcc <- sd(norAcc,na.rm = T)
-        sd_cur <- sd(cur[tp,3],na.rm = T)
+#         sd_cur <- sd(cur[tp,3],na.rm = T)
         sd_totAcc <- sd(totAcc,na.rm = T)
         avg_tanAcc <- mean(tanAcc,na.rm = T)
         avg_norAcc <- mean(norAcc,na.rm = T)
-        avg_cur <- mean(cur[tp,3],na.rm = T)
+#         avg_cur <- mean(cur[tp,3],na.rm = T)
         avg_totAcc <- mean(totAcc,na.rm = T)
         
         # acceleration/deceleration
@@ -110,8 +112,8 @@ for (driver in drivers){
         
         # df
         main_df[d_num,] <- c(driver,trip,trip_distance,t(feature_speed),sd_speed,avg_speed,avg_speed_stop,standstill_time,
-                             t(feature_tanAcc),t(feature_norAcc),t(feature_totAcc),t(feature_heading),sd_tanAcc,sd_norAcc,sd_cur,sd_totAcc,
-                             avg_tanAcc,avg_norAcc,avg_cur,avg_totAcc,avg_acc,avg_dec,t(feature_acc),t(feature_dec),sd_acc,sd_dec,
+                             t(feature_tanAcc),t(feature_norAcc),t(feature_totAcc),t(feature_heading),sd_tanAcc,sd_norAcc,sd_totAcc,
+                             avg_tanAcc,avg_norAcc,avg_totAcc,avg_acc,avg_dec,t(feature_acc),t(feature_dec),sd_acc,sd_dec,
                              cons_time,dec_time,acc_time,ex_acc_time,ex_dec_time,ex_turn,turn_point_mean,t(feature_turn_sp),avg_turn_sp,sd_turn_sp,target)
         
         if (trip==200) {
@@ -120,7 +122,7 @@ for (driver in drivers){
     }
 }
 list <- c()
-for (i in 1:189){
+for (i in 1:187){
     if(sum(is.na(main_df[,i]))>0){
         print(i)
         list <- c(list, i)
@@ -128,11 +130,11 @@ for (i in 1:189){
 }
 main_df <- data.frame(main_df,stringsAsFactors = F)
 names(main_df) <- c('driver','trip','trip_distance',names(feature_speed),'sd_speed','avg_speed','avg_speed_stop','standstill_time',
-                    names(feature_tanAcc),names(feature_norAcc),names(feature_totAcc),names(feature_heading),'sd_tanAcc','sd_norAcc','sd_cur','sd_totAcc',
-                    'avg_tanAcc','avg_norAcc','avg_cur','avg_totAcc','avg_acc','avg_dec',names(feature_acc),names(feature_dec),'sd_acc','sd_dec',
+                    names(feature_tanAcc),names(feature_norAcc),names(feature_totAcc),names(feature_heading),'sd_tanAcc','sd_norAcc','sd_totAcc',
+                    'avg_tanAcc','avg_norAcc','avg_totAcc','avg_acc','avg_dec',names(feature_acc),names(feature_dec),'sd_acc','sd_dec',
                     'cons_time','dec_time','acc_time','ex_acc_time','ex_dec_time','ex_turn','turn_point_mean',names(feature_turn_sp),'avg_turn_sp','sd_turn_sp','target')
 
 dim(main_df);head(main_df)
 
-save(main_df, file='data/main_df_189features.RData')
-write.csv(main_df, file = 'data/main_df_190features.csv', quote = F, row.names = F)
+save(main_df, file='data/main_df_187features.RData')
+write.csv(main_df, file = 'data/main_df_187features.csv', quote = F, row.names = F)
