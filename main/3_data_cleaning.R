@@ -5,7 +5,7 @@ rm(list=ls());gc()
 require(caret);require(data.table)
 
 # main_df <- data.frame(fread('data/main_df_136features.csv',header = T, stringsAsFactor = F))
-load(file='data/main_df_172_median_smooth.RData')
+load(file='data/main_df_189features.RData')
 head(main_df)
 
 ##################
@@ -43,7 +43,7 @@ nzv[nzv$nzv,][1:10,]
 #########################################
 ### Identifying Correlated Predictors ###
 #########################################
-descrCor <- cor(main_df[,-c(1,2,172)])
+descrCor <- cor(main_df[,-c(1,2,189)])
 summary(descrCor[upper.tri(descrCor)])
 
 highlyCorDescr <- findCorrelation(descrCor, cutoff = .99)
@@ -55,7 +55,7 @@ colnames(main_df)
 ###########################
 ### Linear Dependencies ###
 ###########################
-comboInfo <- findLinearCombos(main_df[,-c(1,2,172)])
+comboInfo <- findLinearCombos(main_df[,-c(1,2,189)])
 colnames(main_df[,-c(1,2,172)][,comboInfo$remove])
 main_df[, -comboInfo$remove]
 

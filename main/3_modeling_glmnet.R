@@ -37,7 +37,7 @@ classifier <- function(driver, model='gbm', nrOfDriversToCompare=5, features) {
 # load('Driver-Telematics-Analysis/feature_selection/rfe_var_190.RData')
 set.seed(88)
 
-feature_list <- colnames(main_df[,-c(1,2,83)])
+feature_list <- colnames(main_df[,-c(1,2,189)])
 submission <- data.frame()
 
 for (driver in drivers){
@@ -47,5 +47,5 @@ for (driver in drivers){
     submission <- rbind(submission, result)
 }
 
-write.csv(submission, file = 'submission_glmnet_83_Newton_ridge.csv', quote = F, row.names = F)
+write.csv(submission, file = 'submission_glmnet_189_Newton_ridge.csv', quote = F, row.names = F)
 sum(is.na(submission))
