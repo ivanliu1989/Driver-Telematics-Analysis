@@ -177,8 +177,10 @@ Cartesian_to_Polar <- function(trip,nlag){
 }
 
 # Heading degree
-degree_cal <- function(polar){
-    degrees <- abs(polar[,2] * 180 / pi)
+degree_cal <- function(polar, nlag){
+    degrees <- polar[,2] * 180 / pi
+    degrees <- abs(diff(degrees,lag = nlag))
+    degrees[which(degrees>180)] <- abs(360-degrees[which(degrees>180)])
     return(degrees)
 }
 

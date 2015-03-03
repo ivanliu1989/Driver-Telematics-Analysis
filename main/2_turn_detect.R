@@ -43,3 +43,19 @@ for (i in trip){
 
 plot(trip_data)
 points(trip_data[-1,][which(heading>=90),],col='red')
+
+
+### new test ###
+trip <- matrix(c(0,0,1,0.1,2,-1),nrow = 3,byrow = T)
+trip_p <- Cartesian_to_Polar(trip,1)
+plot(trip)
+degree_cal(trip_p,1)
+
+trip_p <- Cartesian_to_Polar(trip_data,3)
+angle <- degree_cal(trip_p,3)
+
+tp <- which(angle >= 45)
+plot(trip_data);points(trip_data[tp,],col='red')
+
+trip <- trip_data[jp,][tp,]
+plot(trip)

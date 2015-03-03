@@ -45,7 +45,10 @@ for (driver in drivers){
 #         cur <- Cartesian_to_Polar(trip_data,5)[jp,]
 #         degree <- degree_cal(cur)
         
-        tp <- which(cur[,3]<=100) # plot(trip_data);points(trip_data[tp,],col='red')
+        angle <- degree_cal(Cartesian_to_Polar(trip_data,2),2)[jp]
+#         tp <- which(cur[,3] <= 100)
+        tp <- which(angle >= 15) # plot(trip_data);points(trip_data[jp,][tp,],col='red')
+        
         tanAcc <- calcTangAccel(trip_data,1)[jp][tp] #
         norAcc <- calcNormAccel(speed[tp],cur[tp,3]) # zero
         totAcc <- totalAccel(tanAcc,norAcc) # zero
@@ -57,7 +60,8 @@ for (driver in drivers){
         feature_tanAcc <- generateDistribution(tanAcc,'tanAcc')
         feature_norAcc <- generateDistribution(norAcc,'norAcc')
         feature_totAcc <- generateDistribution(totAcc,'totAcc')
-        feature_curvature <- curvatureDistribution(cur[tp,3])
+#         feature_curvature <- curvatureDistribution(cur[tp,3])
+        feature_heading <- generateDistribution(angle,'heading')
         
         sd_tanAcc <- sd(tanAcc,na.rm = T)
         sd_norAcc <- sd(norAcc,na.rm = T)
@@ -99,14 +103,14 @@ for (driver in drivers){
         
         # turning speed/radius/turning point/ex_turning/centrifugal acceleration\
         ex_turn <- length(which(turn_speed>=13.9))/length(tp)
-        turn_point_mean <- length(tp)/length(cur[,3])
+        turn_point_mean <- length(tp)/length(angle)
         feature_turn_sp <- generateDistribution(turn_speed,'turn_sp')
         avg_turn_sp <- mean(turn_speed, na.rm = T)
         sd_turn_sp <- sd(turn_speed, na.rm = T)
         
         # df
         main_df[d_num,] <- c(driver,trip,trip_distance,t(feature_speed),sd_speed,avg_speed,avg_speed_stop,standstill_time,
-                             t(feature_tanAcc),t(feature_norAcc),t(feature_totAcc),t(feature_curvature),sd_tanAcc,sd_norAcc,sd_cur,sd_totAcc,
+                             t(feature_tanAcc),t(feature_norAcc),t(feature_totAcc),t(feature_heading),sd_tanAcc,sd_norAcc,sd_cur,sd_totAcc,
                              avg_tanAcc,avg_norAcc,avg_cur,avg_totAcc,avg_acc,avg_dec,t(feature_acc),t(feature_dec),sd_acc,sd_dec,
                              cons_time,dec_time,acc_time,ex_acc_time,ex_dec_time,ex_turn,turn_point_mean,t(feature_turn_sp),avg_turn_sp,sd_turn_sp,target)
         
@@ -124,7 +128,7 @@ for (i in 1:189){
 }
 main_df <- data.frame(main_df,stringsAsFactors = F)
 names(main_df) <- c('driver','trip','trip_distance',names(feature_speed),'sd_speed','avg_speed','avg_speed_stop','standstill_time',
-                    names(feature_tanAcc),names(feature_norAcc),names(feature_totAcc),names(feature_curvature),'sd_tanAcc','sd_norAcc','sd_cur','sd_totAcc',
+                    names(feature_tanAcc),names(feature_norAcc),names(feature_totAcc),names(feature_heading),'sd_tanAcc','sd_norAcc','sd_cur','sd_totAcc',
                     'avg_tanAcc','avg_norAcc','avg_cur','avg_totAcc','avg_acc','avg_dec',names(feature_acc),names(feature_dec),'sd_acc','sd_dec',
                     'cons_time','dec_time','acc_time','ex_acc_time','ex_dec_time','ex_turn','turn_point_mean',names(feature_turn_sp),'avg_turn_sp','sd_turn_sp','target')
 
