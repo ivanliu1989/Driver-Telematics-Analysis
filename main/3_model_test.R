@@ -35,6 +35,7 @@ g <- train(x = data.matrix(train[,c(feature_list)]), y = as.factor(train$target)
 # 12. nnet - size1,decay0.1 | 0.77582 | 0.80379 || neuralnet
 # ensemble 0.88327
 # 15. AdaBag / ada
+# 16. avNNet - size = 9, decay = 0.1, bag = FALSE
 
 
 ## 1. bdk/xyf(som) - xdim = 7, ydim = 9, xweight = 0.7857143 and topo = hexagonal | (0.7294500)
