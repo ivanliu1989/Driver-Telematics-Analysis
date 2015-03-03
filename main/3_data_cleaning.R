@@ -5,7 +5,7 @@ rm(list=ls());gc()
 require(caret);require(data.table)
 
 # main_df <- data.frame(fread('data/main_df_136features.csv',header = T, stringsAsFactor = F))
-load(file='data/main_df_189features.RData')
+load(file='data/main_df_187features.RData')
 head(main_df)
 
 ##################
@@ -65,8 +65,9 @@ main_df[, -comboInfo$remove]
 #############################
 ### Centering and Scaling ###
 #############################
-# preProcValues <- preProcess(main_df, method = c("center", "scale"))
-# main_dfTransformed <- predict(preProcValues, main_df)
+preProcValues <- preProcess(main_df[,-c(1,2,187)], method = c("center", "scale"))
+preProcValues <- preProcess(main_df[,-c(1,2,187)], method = c("pca"))
+main_dfTransformed <- predict(preProcValues, main_df[,-c(1,2,187)])
 
 ######################
 ### Abnormal Trips ###
