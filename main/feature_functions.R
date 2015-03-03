@@ -48,7 +48,7 @@ calcTangAccel <- function(trip,nlag=1) {
 
 # Normal acceleration
 calcNormAccel <- function(sp,cur,nlag) {
-    accel_fps2 = (sp^2) / cur[,3]
+    accel_fps2 = (sp^2) / cur
     return(accel_fps2)
 }
 calcNormAccel2 <- function(sp,cur,nlag) {
@@ -93,7 +93,7 @@ calcCurvature <- function(trip,nlag) {
 
 # Curvature Distribution
 curvatureDistribution <- function(cur){
-    radius = cur[,3]
+    radius = cur
     values <- radius[is.finite(radius)]
     tryCatch(rtn<-generateDistribution(values,'cur'), 
              error = function(e) {
@@ -118,6 +118,10 @@ curvatureDistribution2 <- function(cur){
 }
 
 # Speed Outliers
+detectJumps <- function(vector, limits=9.8){
+    return(which(vector<=limits))
+} 
+
 removeOutliers <- function(speed, limits=9.8){
     while(length(which(diff(speed,rm.na=T)>limits))>0) {
         outlier <- which(diff(speed,rm.na=T)>limits)
@@ -127,6 +131,16 @@ removeOutliers <- function(speed, limits=9.8){
         }
     }
     return(speed)
+} 
+
+removeOutliers2 <- function(vector, limits=9.8){
+    vector <- vector[-which(vector>limits)]
+    return(vector)
+} 
+
+replaceOutliers <- function(vector, limits=9.8){
+    vector[which(vector>limits)] <- limits
+    return(vector)
 } 
 
 # Acceleration Outliers
@@ -139,6 +153,15 @@ removeAccOutliers <- function(totAcc,tanAcc,norAcc, limits=9.8){
             tanAcc[i] <- sqrt(totAcc[i]^2-norAcc[i]^2)
         }
     }
+    acc <- data.matrix(data.table(totAcc = totAcc,tanAcc = tanAcc, norAcc = norAcc))
+    return(acc)
+} 
+
+removeAccOutliers2 <- function(totAcc,tanAcc,norAcc, limits=9.8){
+    tanAcc <- tanAcc[-which(totAcc>limits)]
+    norAcc <- totAcc[-which(totAcc>limits)]
+    totAcc <- totAcc[-which(totAcc>limits)]
+    
     acc <- data.matrix(data.table(totAcc = totAcc,tanAcc = tanAcc, norAcc = norAcc))
     return(acc)
 } 
