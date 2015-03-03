@@ -25,7 +25,7 @@ for (driver in drivers){
         # target
         target <- 0
         # speed
-        trip_distance <- distance(trip_data)
+        trip_distance <- log(distance(trip_data))
         jp <- detectJumps(calcSpeed(trip_data),sp_limits)
         speed <- calcSpeed(trip_data)[jp]
         feature_speed <- generateDistribution(speed, 'speed')

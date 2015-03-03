@@ -11,7 +11,7 @@ head(main_df)
 ##################
 ### Null Value ###
 ##################
-sum(is.na(main_df))
+mean(is.na(main_df))
 null_col <- c()
 for (col in 1:length(colnames(main_df))){
     if(sum(is.na(main_df[,col])>0)){
@@ -22,6 +22,7 @@ for (col in 1:length(colnames(main_df))){
 }
 colnames(main_df[,null_col])
 
+sum(which(main_df == Inf))
 main_df[which(main_df$ex_acc_time == Inf),'ex_acc_time'] <- 0
 
 ##############################
@@ -45,11 +46,11 @@ nzv[nzv$nzv,][1:10,]
 #########################################
 ### Identifying Correlated Predictors ###
 #########################################
-descrCor <- cor(main_df[,-c(1,2,189)])
+descrCor <- cor(main_df[,-c(1,2,187)])
 summary(descrCor[upper.tri(descrCor)])
 
 highlyCorDescr <- findCorrelation(descrCor, cutoff = .99)
-highlyCorName <- colnames(main_df[,-c(1,2,189)][,highlyCorDescr])
+highlyCorName <- colnames(main_df[,-c(1,2,187)][,highlyCorDescr])
 head(main_df[,highlyCorName])
 main_df <- main_df[,-which(colnames(main_df) %in% highlyCorName)]
 colnames(main_df)
@@ -57,8 +58,8 @@ colnames(main_df)
 ###########################
 ### Linear Dependencies ###
 ###########################
-comboInfo <- findLinearCombos(main_df[,-c(1,2,189)])
-colnames(main_df[,-c(1,2,189)][,comboInfo$remove])
+comboInfo <- findLinearCombos(main_df[,-c(1,2,187)])
+colnames(main_df[,-c(1,2,187)][,comboInfo$remove])
 main_df[, -comboInfo$remove]
 
 #############################
