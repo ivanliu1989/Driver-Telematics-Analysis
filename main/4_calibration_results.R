@@ -30,3 +30,12 @@ write.csv(results, file = 'calibra_all_0.8.csv', quote = F, row.names = F)
 # quantile(dist, qdist)
 
 results[(driver_trip %in% match_matrix[,1]) & (prob > 0.8),prob:=1]
+
+
+### Step 3 ###
+results <- (fread('submission_rf_172_17_0.87142.csv',header = T, stringsAsFactor = F))
+load('Driver-Telematics-Analysis/repeated_trips/short_trip_detections.RData')
+match_matrix <- match_matrix[which(match_matrix[,1]>0),]
+results[driver_trip %in% match_matrix[,1],prob]
+results[driver_trip %in% match_matrix[,1],prob:=0]
+write.csv(results, file = 'calibra_short_trip_zero.csv', quote = F, row.names = F)
