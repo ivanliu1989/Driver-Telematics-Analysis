@@ -11,7 +11,7 @@ path <- "data/drivers/"
 ### MAIN_PROC ###
 #################
 date(); d_num <- 0
-main_df <- matrix(0, nrow = length(drivers)*200, ncol = 134, dimnames = list(NULL, NULL))
+main_df <- matrix(0, nrow = length(drivers)*200, ncol = 214, dimnames = list(NULL, NULL))
 sp_limits <- 280/3.6
 for (driver in drivers){
     for (trip in trips){
@@ -29,7 +29,7 @@ for (driver in drivers){
         jp <- detectJumps(calcSpeed(trip_data),sp_limits) #jp
         speed <- calcSpeed(trip_data)[jp] #speed
         
-        feature_speed <- generateDistribution(speed, 'speed', 0.1)
+        feature_speed <- generateDistribution(speed, 'speed', 0.05)
         avg_speed <- mean(speed, na.rm = T)
         sd_speed <- sd(speed, na.rm=T)
         med_speed <- median(speed, na.rm = T)
@@ -46,8 +46,8 @@ for (driver in drivers){
         ex_acc <- adceleration[which(adceleration>= 3)] #extreme acceleration
         ex_dec <- adceleration[which(adceleration<= -3)] #extreme deceleration
         
-        feature_acc <- generateDistribution(acceleration,'Acc',0.1)
-        feature_dec <- generateDistribution(deceleration,'Dec',0.1)
+        feature_acc <- generateDistribution(acceleration,'Acc',0.05)
+        feature_dec <- generateDistribution(deceleration,'Dec',0.05)
         avg_acc <- mean(acceleration,na.rm = T)
         avg_dec <- mean(deceleration,na.rm = T)
         acc_time <- length(acceleration)/length(adceleration)
@@ -76,11 +76,11 @@ for (driver in drivers){
 #         norAcc[which(norAcc == Inf)] <- 0 #normal acceleration
         totAcc <- totalAccel(tanAcc,norAcc) #total acceleration
 
-        feature_heading <- generateDistribution(angle,'heading', 0.1)
-        feature_curvature <- curvatureDistribution(cur[tp2,3], 0.1) #cur[tp,3]
-        feature_tanAcc <- generateDistribution(tanAcc,'tanAcc', 0.1)
-        feature_norAcc <- generateDistribution(norAcc,'norAcc', 0.1)
-        feature_totAcc <- generateDistribution(totAcc,'totAcc', 0.1)
+        feature_heading <- generateDistribution(angle,'heading', 0.05)
+        feature_curvature <- curvatureDistribution(cur[tp2,3], 0.05) #cur[tp,3]
+        feature_tanAcc <- generateDistribution(tanAcc,'tanAcc', 0.05)
+        feature_norAcc <- generateDistribution(norAcc,'norAcc', 0.05)
+        feature_totAcc <- generateDistribution(totAcc,'totAcc', 0.05)
         sd_tanAcc <- sd(tanAcc,na.rm = T)
         sd_norAcc <- sd(norAcc,na.rm = T)
         sd_cur <- sd(cur[tp2,3],na.rm = T)
