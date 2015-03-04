@@ -132,4 +132,4 @@ names(main_df) <- c('driver','trip','trip_distance','driver_time','fly_distance'
                     'avg_tanAcc','avg_norAcc','avg_cur','avg_totAcc','med_tanAcc','med_norAcc','med_cur','med_totAcc',
                     names(feature_turn_sp),'turn_time','avg_turn_sp','sd_turn_sp','med_turn_sp','ex_turn','target')
 # main_df[,67:76][which(main_df[,67:76]>100),] <- 101
-save(main_df, file='data/main_df_134features.RData')
+save(main_df, file='data/main_df_214features.RData')
