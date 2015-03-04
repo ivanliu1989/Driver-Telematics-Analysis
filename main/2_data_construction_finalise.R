@@ -65,35 +65,36 @@ for (driver in drivers){
         inter_speed <- length(which(speed < 17 & speed > 7))/length(speed)
         
         ### Heading / Angle Features ###
+        cur <- calcCurvature(trip_data,2)
         r <- Cartesian_to_Polar(trip_data,2) #initial radius **calcCurvature()**
         rp <- detectJumps(r[,1],sp_limits*2) #rp
         r <- r[rp,] #radius & theta
         angle <- degree_cal(r,2) #angle(0-180)
+        tp <- which(angle >= 15) #turn points
         tanAcc <- calcTangAccel(trip_data,2)[rp][tp] #tangential acceleration
-        norAcc <- calcNormAccel(speed[tp],r[tp]) #normal acceleration
-        norAcc[which(norAcc == Inf)] <- 0 #normal acceleration
+        norAcc <- calcNormAccel(speed[tp],cur[tp,3]) #normal acceleration
+#         norAcc[which(norAcc == Inf)] <- 0 #normal acceleration
         totAcc <- totalAccel(tanAcc,norAcc) #total acceleration
 
         feature_heading <- generateDistribution(angle,'heading', 0.1)
-        feature_curvature <- curvatureDistribution(r[,2], 0.1) #cur[tp,3]
+        feature_curvature <- curvatureDistribution(cur[tp,3], 0.1) #cur[tp,3]
         feature_tanAcc <- generateDistribution(tanAcc,'tanAcc', 0.1)
         feature_norAcc <- generateDistribution(norAcc,'norAcc', 0.1)
         feature_totAcc <- generateDistribution(totAcc,'totAcc', 0.1)
         sd_tanAcc <- sd(tanAcc,na.rm = T)
         sd_norAcc <- sd(norAcc,na.rm = T)
-        sd_cur <- sd(r[,2],na.rm = T)
+        sd_cur <- sd(cur[tp,3],na.rm = T)
         sd_totAcc <- sd(totAcc,na.rm = T)
         avg_tanAcc <- mean(tanAcc,na.rm = T)
         avg_norAcc <- mean(norAcc,na.rm = T)
-        avg_cur <- mean(r[,2],na.rm = T)
+        avg_cur <- mean(cur[tp,3],na.rm = T)
         avg_totAcc <- mean(totAcc,na.rm = T)
         med_tanAcc <- median(tanAcc,na.rm = T)
         med_norAcc <- median(norAcc,na.rm = T)
-        med_cur <- median(r[,2],na.rm = T)
+        med_cur <- median(cur[tp,3],na.rm = T)
         med_totAcc <- median(totAcc,na.rm = T)
 
         ### Turn Features ###
-        tp <- which(angle >= 15) #turn points
         turn_speed <- speed[tp] #turn speed
         
         feature_turn_sp <- generateDistribution(turn_speed,'turn_sp',0.1)
@@ -129,5 +130,5 @@ names(main_df) <- c('driver','trip','trip_distance','driver_time','fly_distance'
                     names(feature_heading),names(feature_curvature),names(feature_tanAcc),names(feature_norAcc),names(feature_totAcc),'sd_tanAcc','sd_norAcc','sd_cur','sd_totAcc',
                     'avg_tanAcc','avg_norAcc','avg_cur','avg_totAcc','med_tanAcc','med_norAcc','med_cur','med_totAcc',
                     names(feature_turn_sp),'turn_time','avg_turn_sp','sd_turn_sp','med_turn_sp','ex_turn','target')
-
+# main_df[,67:76][which(main_df[,67:76]>100)] <- 101
 save(main_df, file='data/main_df_134features.RData')
