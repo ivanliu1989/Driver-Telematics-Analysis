@@ -19,13 +19,13 @@ for (driver in drivers){
         files <- paste0(path, driver, '/', trip, ".csv")
         trip_data <- data.matrix(fread(files, header=T, sep="," ,stringsAsFactor=F))
         
-        # Basic Features
+        ### Basic Features ###
         target <- 0
         trip_distance <- distance(trip_data)
         driver_time <- nrow(trip_data)
         fly_distance <- sqrt(trip_data[driver_time,1]^2 + trip_data[driver_time,1]^2)
         
-        # Speed Features
+        ### Speed Features ###
         jp <- detectJumps(calcSpeed(trip_data),sp_limits) #jp
         speed <- calcSpeed(trip_data)[jp] #speed
         
@@ -39,8 +39,35 @@ for (driver in drivers){
         sd_speed_run <- sd(speed[which(speed > 0)], na.rm = T)
         med_speed_run <- median(speed[which(speed > 0)], na.rm = T)
         
+        ### Acceleration Features ###
+        adceleration <- diff(speed) #speed change
+        acceleration <- adceleration[which(adceleration >= 0.01)] #acceleration
+        deceleration <- adceleration[which(adceleration <= -0.01)] #deceleration
+        ex_acc <- adceleration[which(adceleration>= 3)] #extreme acceleration
+        ex_dec <- adceleration[which(adceleration<= -3)] #extreme deceleration
+        
+        feature_acc <- generateDistribution(acceleration,'Acc',0.1)
+        feature_dec <- generateDistribution(deceleration,'Dec',0.1)
+        avg_acc <- mean(acceleration,na.rm = T)
+        avg_dec <- mean(deceleration,na.rm = T)
+        acc_time <- length(acceleration)/length(adceleration)
+        dec_time <- length(deceleration)/length(adceleration)
+        sd_acc <- sd(acceleration,na.rm = T)
+        sd_dec <- sd(deceleration,na.rm = T)
+        med_acc <- median(acceleration,na.rm = T)
+        med_dec <- median(deceleration,na.rm = T)
+        ex_acc_time <- length(ex_acc)/length(adceleration)
+        ex_dec_time <- length(ex_dec)/length(adceleration)
+        
+        ### Extreme Driving Features ###
+        high_speed <- length(which(speed > 22))/length(speed)
+        low_speed <- length(which(speed < 2.6))/length(speed)
+        inter_speed <- length(which(speed < 17 & speed > 7))/length(speed)
+        
+        ### Heading / Angle Features ###
         
         
+        ### Turn Features ###
         
         
         
@@ -79,25 +106,7 @@ for (driver in drivers){
         avg_totAcc <- mean(totAcc,na.rm = T)
         
         
-        adceleration <- diff(calcSpeed(trip_data))[jp] #
-        acceleration <- adceleration[which(adceleration>= 0.01)] #
-        deceleration <- adceleration[which(adceleration<= -0.01)] #
-        constant <- adceleration[which(abs(adceleration) < 0.01)] #
-       
-        avg_acc <- mean(acceleration,na.rm = T)
-        avg_dec <- mean(deceleration,na.rm = T)
-        feature_acc <- generateDistribution(acceleration,'Acc')
-        feature_dec <- generateDistribution(deceleration,'Dec')
-        sd_acc <- sd(acceleration,na.rm = T)
-        sd_dec <- sd(deceleration,na.rm = T)
-        cons_time <- length(constant)/length(adceleration)
-        dec_time <- length(deceleration)/length(adceleration)
-        acc_time <- length(acceleration)/length(adceleration)
         
-        ex_acc <- adceleration[which(adceleration>= 3)]
-        ex_acc_time <- length(ex_acc)/length(adceleration)
-        ex_dec <- adceleration[which(adceleration<= -3)]
-        ex_dec_time <- length(ex_dec)/length(adceleration)
         
         
         turn_speed <- speed[tp] #
