@@ -11,6 +11,10 @@ head(main_df)
 ##################
 ### Null Value ###
 ##################
+for(i in 67:76){
+    main_df[which(main_df[,i]>100),i]  <- 101
+}
+
 mean(is.na(main_df))
 null_col <- c()
 for (col in 1:length(colnames(main_df))){
