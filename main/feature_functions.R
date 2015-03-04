@@ -1,7 +1,4 @@
-library(data.table);library(plotrix);library(data.table);library(parallel);library(caret)
-
-files <- "data/drivers/1/1.csv"
-trip_data <- data.matrix(read.csv(files,header = T,stringsAsFactor=F))
+library(data.table);library(plotrix);library(parallel);require(zoo);
 
 # Total Distance
 distance <- function(trip,nlag=1){
@@ -22,9 +19,9 @@ calcSpeed <- function(trip,nlag=1) {
 }
 
 # Distribution
-generateDistribution <- function(x,name) {
+generateDistribution <- function(x,name,gap=0.1) {
     x_wo_na <- x[!is.na(x)]
-    qdist <- seq(0.05,1, by = 0.05)
+    qdist <- seq(gap,1, by = gap)
     if (length(x_wo_na)<(2*length(qdist))) {
         dist <- quantile(x_wo_na, qdist)
     } else {
@@ -92,25 +89,25 @@ calcCurvature <- function(trip,nlag) {
 }
 
 # Curvature Distribution
-curvatureDistribution <- function(cur){
+curvatureDistribution <- function(cur,gap=0.1){
     radius = cur
     values <- radius[is.finite(radius)]
-    tryCatch(rtn<-generateDistribution(values,'cur'), 
+    tryCatch(rtn<-generateDistribution(values,'cur',gap), 
              error = function(e) {
                  e
-                 generateDistribution(values,'cur')
+                 generateDistribution(values,'cur',gap)
                  rtn<-NULL
              }
     )
     return(rtn)  
 }
-curvatureDistribution2 <- function(cur){
+curvatureDistribution2 <- function(cur,gap=0.1){
     radius = cur
     values <- radius[is.finite(radius)]
-    tryCatch(rtn<-generateDistribution(values,'cur'), 
+    tryCatch(rtn<-generateDistribution(values,'cur',gap), 
              error = function(e) {
                  e
-                 generateDistribution(values,'cur')
+                 generateDistribution(values,'cur',gap)
                  rtn<-NULL
              }
     )
