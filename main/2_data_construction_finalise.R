@@ -65,6 +65,14 @@ for (driver in drivers){
         inter_speed <- length(which(speed < 17 & speed > 7))/length(speed)
         
         ### Heading / Angle Features ###
+        r <- Cartesian_to_Polar(trip_data,2) #initial radius
+        rp <- detectJumps(r[,1],sp_limits*2) #rp
+        r <- r[rp,] #radius & theta
+        angle <- degree_cal(r,2) #angle(0-180)
+        tp <- which(angle >= 15) #turn points
+        
+        
+        
         
         
         ### Turn Features ###
@@ -72,14 +80,12 @@ for (driver in drivers){
         
         
         
-                cur <- calcCurvature(trip_data,2)[jp,] # zero
-                cur <- Cartesian_to_Polar(trip_data,5)[jp,]
-                degree <- degree_cal(cur)
-        rp <- detectJumps(Cartesian_to_Polar(trip_data,2)[,1],sp_limits*2)
-        r <- Cartesian_to_Polar(trip_data,2)[rp,]
-        angle <- degree_cal(r,2)
+#                 cur <- calcCurvature(trip_data,2)[jp,] # zero
+               
         
-        tp <- which(angle >= 15) # plot(trip_data);points(trip_data[jp,][tp,],col='red')
+        
+        
+        
         
         tanAcc <- calcTangAccel(trip_data,2)[rp][tp] #
         norAcc <- calcNormAccel(speed[tp],r[tp]) # zero
