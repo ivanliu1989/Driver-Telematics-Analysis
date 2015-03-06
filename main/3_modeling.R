@@ -42,7 +42,7 @@ registerDoMC(cores = 2)
 set.seed(68)
 fitControl <- trainControl(method = "none",number = 10,repeats = 3,classProbs = TRUE,
                            summaryFunction = twoClassSummary,adaptive = list(min = 4,alpha = 0.05,method = "BT",complete = TRUE))
-gbmGrid <-  expand.grid(k=22)
+gbmGrid <-  expand.grid(k=5)
 feature_list <- colnames(main_df[,-c(1,2,187)])
 submission <- data.frame()
 
@@ -53,5 +53,5 @@ for (driver in drivers){ #avNNet
     submission <- rbind(submission, result)
 }
 
-write.csv(submission, file = 'submission_glm_187_pca_22.csv', quote = F, row.names = F)
+write.csv(submission, file = 'submission_knn_187_pca_5.csv', quote = F, row.names = F)
 sum(is.na(submission))
