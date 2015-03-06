@@ -19,14 +19,14 @@ classifier <- function(driver, model='gbm', nrOfDriversToCompare=5, features) {
     test_num <- sample(drivers[which(drivers!=driver)],nrOfDriversToCompare)
     
     refData <-  main_df[main_df[,1] %in% test_num,]
-#     refData <-  result_centriods
+    #     refData <-  result_centriods
     refData$target <- 'No'
     train <- rbind(currentData, refData)
     
     #model
-
+    
     g <- train(x = data.matrix(train[,c(features)]), y = as.factor(train$target), method = model,trControl = fitControl, 
-                tuneLength = 6,metric = "ROC",tuneGrid = gbmGrid)# ,preProc = c("center", "scale", "pca")), repeats = 15, trace = FALSE)
+               tuneLength = 6,metric = "ROC",preProc = c("center", "scale", "pca"),tuneGrid = gbmGrid)# ,, repeats = 15, trace = FALSE)
     p <- predict(g, newdata = data.matrix(currentData[,c(features)]), type = "prob")
     
     result <- data.frame(driver_trip=paste0(currentData[,1],'_',currentData[,2],sep=''), prob=p$Yes)
@@ -39,19 +39,19 @@ classifier <- function(driver, model='gbm', nrOfDriversToCompare=5, features) {
 library(doMC)
 registerDoMC(cores = 2)
 # load('Driver-Telematics-Analysis/feature_selection/rfe_var_190.RData')
-set.seed(18)
+set.seed(68)
 fitControl <- trainControl(method = "none",number = 10,repeats = 3,classProbs = TRUE,
                            summaryFunction = twoClassSummary,adaptive = list(min = 4,alpha = 0.05,method = "BT",complete = TRUE))
-gbmGrid <-  expand.grid(mtry=17)
-feature_list <- colnames(main_df[,-c(1,2,214)])
+gbmGrid <-  expand.grid(k=22)
+feature_list <- colnames(main_df[,-c(1,2,187)])
 submission <- data.frame()
 
 for (driver in drivers){ #avNNet
-    result <- classifier(driver,'rf',5,feature_list)
+    result <- classifier(driver,'knn',1,feature_list)
     print(paste0('driver: ', driver, ' | ' ,date())) 
     
     submission <- rbind(submission, result)
 }
 
-write.csv(submission, file = '../../Google Drive/submission_rf_214_17.csv', quote = F, row.names = F)
+write.csv(submission, file = 'submission_glm_187_pca_22.csv', quote = F, row.names = F)
 sum(is.na(submission))
