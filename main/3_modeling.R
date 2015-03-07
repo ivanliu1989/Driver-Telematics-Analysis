@@ -14,7 +14,7 @@ drivers <- sort(as.numeric(list.files(datadirectory)))
 ##################
 classifier <- function(driver, model='gbm', nrOfDriversToCompare=5, features) {
     currentData <- main_df[main_df[,1]==driver,]
-    currentData$target <- 'Yes'
+    #currentData$target <- 'Yes'
     
     test_num <- sample(drivers[which(drivers!=driver)],nrOfDriversToCompare)
     
@@ -26,7 +26,7 @@ classifier <- function(driver, model='gbm', nrOfDriversToCompare=5, features) {
     #model
     
     g <- train(x = data.matrix(train[,c(features)]), y = as.factor(train$target), method = model,trControl = fitControl, 
-               tuneLength = 6,metric = "ROC",preProc = c("center", "scale", "pca"),tuneGrid = gbmGrid)# ,, repeats = 15, trace = FALSE)
+               tuneLength = 6,metric = "ROC",tuneGrid = gbmGrid)# preProc = c("center", "scale", "pca"),repeats = 15, trace = FALSE)
     p <- predict(g, newdata = data.matrix(currentData[,c(features)]), type = "prob")
     
     result <- data.frame(driver_trip=paste0(currentData[,1],'_',currentData[,2],sep=''), prob=p$Yes)
@@ -42,16 +42,16 @@ registerDoMC(cores = 2)
 set.seed(68)
 fitControl <- trainControl(method = "none",number = 10,repeats = 3,classProbs = TRUE,
                            summaryFunction = twoClassSummary,adaptive = list(min = 4,alpha = 0.05,method = "BT",complete = TRUE))
-gbmGrid <-  expand.grid(k=5)
-feature_list <- colnames(main_df[,-c(1,2,187)])
+gbmGrid <-  expand.grid(mtry=17)
+feature_list <- colnames(main_df[,-c(1,2,ncol(main_df))])
 submission <- data.frame()
 
 for (driver in drivers){ #avNNet
-    result <- classifier(driver,'knn',1,feature_list)
+    result <- classifier(driver,'rf',5,feature_list)
     print(paste0('driver: ', driver, ' | ' ,date())) 
     
     submission <- rbind(submission, result)
 }
 
-write.csv(submission, file = 'submission_rf_175_17.csv', quote = F, row.names = F)
+write.csv(submission, file = 'submission_rf_214_17_semi.csv', quote = F, row.names = F)
 sum(is.na(submission))
