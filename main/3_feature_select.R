@@ -5,7 +5,7 @@ require(caret);require(data.table)
 head(main_df)
 datadirectory <- 'data/drivers/'
 drivers <- sort(as.numeric(list.files(datadirectory)))
-driver <- 1000
+driver <- 888
 # model <- 'rf'
 
 ### model sbf_var rfe_var
@@ -38,20 +38,20 @@ g <- train(as.factor(target) ~ ., data = train[,c(rfe_var,'target')], method = m
 
 # rfe 40
 set.seed(888)
-cols <- c(5,10,20,40,60,80,120,160,180)
-ctrl <- rfeControl(functions = rfFuncs,method = "repeatedcv",repeats = 5,verbose = FALSE)
-lmProfile <- rfe(x=train[,-c(1,2,190)], y=as.factor(train$target),sizes = cols,rfeControl = ctrl)
+cols <- c(5,10,20,40,60,80,120,160,180,200,210)
+ctrl <- rfeControl(functions = rfFuncs,method = "repeatedcv",repeats = 10,verbose = FALSE)
+lmProfile <- rfe(x=train[,-c(1,2,ncol(train))], y=as.factor(train$target),sizes = cols,rfeControl = ctrl)
 lmProfile
 rfe_var <- predictors(lmProfile)
 head(lmProfile$resample)
 trellis.par.set(caretTheme())
 plot(lmProfile, type = c("g", "o"))
-save(rfe_var, file='rfe_var_190_2.RData')
+save(rfe_var, file='rfe_var_214.RData')
 
 # sbf
 filterCtrl <- sbfControl(functions = rfSBF,method = "repeatedcv", repeats = 5)
 set.seed(10)
-rfWithFilter <- sbf(x=train[,-c(1,2,190)], y=as.factor(train$target), sbfControl = filterCtrl)
+rfWithFilter <- sbf(x=train[,-c(1,2,ncol(train))], y=as.factor(train$target), sbfControl = filterCtrl)
 rfWithFilter
 sbf_var <- predictors(rfWithFilter)
 head(rfWithFilter$resample)

@@ -21,7 +21,7 @@ train <- rbind(currentData, refData)
 feature_list <- colnames(main_df[,-c(1,2,187)])
 
 g <- train(x = data.matrix(train[,c(feature_list)]), y = as.factor(train$target), method = model, trControl = fitControl, 
-           metric = "ROC", tuneLength=8, preProc = c("center", "scale", "pca"), repeats = 15, trace = FALSE)  #verbose=T,
+           metric = "ROC", tuneLength=8, preProc = c("center", "scale", 'Yeo-Johnson'))#, "pca", repeats = 15, trace = FALSE)  #verbose=T,
 # p <- predict(g, newdata = data.matrix(currentData[,-c(1,2,80)]), type = "prob")
 
 ### Models:

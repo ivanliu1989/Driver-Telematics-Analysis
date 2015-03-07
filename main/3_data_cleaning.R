@@ -74,8 +74,8 @@ main_df[, -comboInfo$remove]
 ### Centering and Scaling ###
 #############################
 preProcValues <- preProcess(main_df[,-c(1,2,187)], method = c("center", "scale"))
-preProcValues <- preProcess(main_df[,-c(1,2,187)], method = c("pca"))
-main_dfTransformed <- predict(preProcValues, main_df[,-c(1,2,187)])
+preProcValues <- preProcess(main_df[,-c(1,2,ncol(main_df))], method = c("YeoJohnson"))
+main_dfTransformed <- predict(preProcValues, main_df[,-c(1,2,ncol(main_df))])
 
 ######################
 ### Abnormal Trips ###
