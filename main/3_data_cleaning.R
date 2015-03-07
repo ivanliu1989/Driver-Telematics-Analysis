@@ -5,8 +5,8 @@ rm(list=ls());gc()
 require(caret);require(data.table)
 
 # main_df <- data.frame(fread('data/main_df_136features.csv',header = T, stringsAsFactor = F))
-load(file='data/main_df_214features.RData')
-answer <- data.frame(fread('First_try_66_repeated.csv',header = T, stringsAsFactor = F))
+load(file='data/main_df_172_median_smooth.RData')
+answer <- data.frame(fread('First_try_52.csv',header = T, stringsAsFactor = F))
 answer[which(answer[,2]>=0.5),2] <- 'Yes'
 answer[which(answer[,2]<0.5),2] <- 'No'
 main_df$target <- answer[,2]
