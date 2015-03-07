@@ -225,7 +225,7 @@ for(driver in sub_drivers){
                         d_num <- d_num + 1
                         print(paste0('Driver ',driver,' Trips Match: ', trip, ' | ', other, '!!!'))
                         plot(tx,col='blue');points(ty,col='red')
-                        match_matrix[d_num,] <- c(paste0(driver,'_',trip),other)    
+                        match_matrix[d_num,] <- c(paste0(driver,'_',trip),paste0(driver,'_',other))    
                         
                         if(d_num %% 5000 == 0 ){
                             save(match_matrix, file=paste0('repeated_map_thereshold_',threshold,'_driver_',driver,'_num_',d_num,'.RData'))
