@@ -21,9 +21,13 @@ classifier <- function(driver, model='gbm', nrOfDriversToCompare=5, features) {
     train <- rbind(currentData, refData)
     
     #model
-    g <- glmnet(x = data.matrix(train[,c(features)]), y = data.matrix(train$target),family = "binomial", alpha = 0.9, 
-                standardize = T, intercept = T, type.logistic = "Newton")
-    p <- predict(g, newx = data.matrix(currentData[,c(features)]), type = "response")
+    preProcValues <- preProcess(train[,c(features)], method = c("center", "scale", "pca"))
+    train[,c(features)] <- predict(preProcValues, train[,c(features)])
+    currentData[,c(features)] <- predict(preProcValues, currentData[,c(features)])
+    
+    g <- glmnet(x = data.matrix(train[,-c(1,2,ncol(train))]), y = data.matrix(train$target),family = "binomial", alpha = 0.5, 
+                standardize = F, intercept = T, type.logistic = "Newton")
+    p <- predict(g, newx = data.matrix(currentData[,-c(1,2,ncol(currentData))]), type = "response")
     
     result <- data.frame(driver_trip=paste0(currentData[,1],'_',currentData[,2],sep=''), prob=p[,dim(p)[2]])
     return(result)
@@ -37,7 +41,7 @@ classifier <- function(driver, model='gbm', nrOfDriversToCompare=5, features) {
 # load('Driver-Telematics-Analysis/feature_selection/rfe_var_190.RData')
 set.seed(88)
 
-feature_list <- colnames(main_df[,-c(1,2,26:87,108:113,156,161:163,187)])
+feature_list <- colnames(main_df[,-c(1,2,214)])
 submission <- data.frame()
 
 for (driver in drivers){
@@ -47,5 +51,5 @@ for (driver in drivers){
     submission <- rbind(submission, result)
 }
 
-write.csv(submission, file = 'submission_glmnet_187_Newton_09.csv', quote = F, row.names = F)
+write.csv(submission, file = 'submission_glmnet_214_Newton_PCA.csv', quote = F, row.names = F)
 sum(is.na(submission))

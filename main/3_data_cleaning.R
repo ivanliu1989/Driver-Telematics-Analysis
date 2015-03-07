@@ -5,7 +5,7 @@ rm(list=ls());gc()
 require(caret);require(data.table)
 
 # main_df <- data.frame(fread('data/main_df_136features.csv',header = T, stringsAsFactor = F))
-load(file='data/main_df_187features.RData')
+load(file='data/main_df_214features.RData')
 head(main_df)
 
 ##################
