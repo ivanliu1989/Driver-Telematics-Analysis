@@ -34,9 +34,10 @@ match_matrix[,2] <- sapply(1:nrow(match_matrix),function(i){
 load('Driver-Telematics-Analysis/repeated_trips/repeated_map_thereshold_0.03_ALL.RData')
 
 # match_matrix <- match_matrix[which(match_matrix[,1]>0),]
-results[driver_trip %in% match_matrix[,1],prob]
-results[driver_trip %in% match_matrix[,1],prob:=1]
-write.csv(results, file = 'calibra_all_0.8.csv', quote = F, row.names = F)
+results[driver_trip %in% match_matrix,prob]
+results[,prob:=0]
+results[driver_trip %in% match_matrix,prob:=1]
+write.csv(results, file = 'calibra_trip_matching.csv', quote = F, row.names = F)
 
 ### distance quantile ###
 # qdist <- seq(0.01,1, by = 0.01)
