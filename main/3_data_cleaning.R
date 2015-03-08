@@ -1,4 +1,4 @@
-# setwd('H:/Machine_Learning/DTA')
+setwd('H:/Machine_Learning/DTA')
 setwd('/Users/ivan/Work_directory/DTA')
 setwd('C:/Users/Ivan.Liuyanfeng/Desktop/Data_Mining_Work_Space/DTA')
 rm(list=ls());gc()
