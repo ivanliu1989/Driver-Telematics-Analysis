@@ -14,10 +14,10 @@ drivers <- sort(as.numeric(list.files(datadirectory)))
 ##################
 classifier <- function(driver, model='gbm', nrOfDriversToCompare=5, features) {
     currentData <- main_df[main_df[,1]==driver,]
-    currentData$target <- 1
+    #currentData$target <- 1
     test_num <- sample(drivers[which(drivers!=driver)],nrOfDriversToCompare)
     refData <-  main_df[main_df[,1] %in% test_num,]
-    refData$target <- 0
+    refData$target <- 'No'
     train <- rbind(currentData, refData)
     
     #model
@@ -41,7 +41,7 @@ classifier <- function(driver, model='gbm', nrOfDriversToCompare=5, features) {
 # load('Driver-Telematics-Analysis/feature_selection/rfe_var_190.RData')
 set.seed(88)
 
-feature_list <- colnames(main_df[,-c(1,2,214)])
+feature_list <- colnames(main_df[,-c(1,2,ncol(main_df))])
 submission <- data.frame()
 
 for (driver in drivers){
@@ -51,5 +51,5 @@ for (driver in drivers){
     submission <- rbind(submission, result)
 }
 
-write.csv(submission, file = 'submission_glmnet_214_Newton_PCA_05.csv', quote = F, row.names = F)
+write.csv(submission, file = 'submission_glmnet_172_Newton_PCA_semi.csv', quote = F, row.names = F)
 sum(is.na(submission))
