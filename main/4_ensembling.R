@@ -49,14 +49,12 @@ for(file in files[-1]){
 
 final_prob <- ensem_prob/i
 ensemble <- data.frame(driver_trip=result[,1], prob=final_prob)
-write.csv(ensemble, file = 'First_try_60.csv', quote = F, row.names = F)
+write.csv(ensemble, file = 'Second_try_44.csv', quote = F, row.names = F)
 
 ### repeat ###
-load('Driver-Telematics-Analysis/repeated_trips/repeated_map_thereshold_0.03_driver_1_2173.RData')
-load('Driver-Telematics-Analysis/repeated_trips/repeated_map_thereshold_0.03_driver_2174_3612.RData')
-match_matrix <- match_matrix[which(match_matrix[,1]>0),]
+load('Driver-Telematics-Analysis/repeated_trips/repeated_map_thereshold_0.03_ALL.RData')
 ensemble <- data.table(ensemble)
-ensemble[driver_trip %in% match_matrix[,1],prob]
-ensemble[driver_trip %in% match_matrix[,1],prob:=1]
-write.csv(ensemble, file = 'First_try_66_repeated.csv', quote = F, row.names = F)
+ensemble[driver_trip %in% match_matrix,prob]
+ensemble[driver_trip %in% match_matrix,prob:=1]
+write.csv(ensemble, file = 'Second_try_44_trip_match.csv', quote = F, row.names = F)
 
