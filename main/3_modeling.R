@@ -1,4 +1,4 @@
-# setwd('H:/Machine_Learning/DTA')
+setwd('H:/Machine_Learning/DTA')
 setwd('/Users/ivan/Work_directory/DTA')
 rm(list=ls());gc()
 require(caret);require(data.table)

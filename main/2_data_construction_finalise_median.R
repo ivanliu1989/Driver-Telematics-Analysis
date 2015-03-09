@@ -27,7 +27,7 @@ for (driver in drivers){
         
         ### Speed Features ###
         #jp <- detectJumps(calcSpeed(trip_data),sp_limits) #jp
-        speed <- rollapply(calcSpeed(trip_data), width = 5, FUN = median) # rolling median smooth #speed
+        speed <- rollapply(calcSpeed(trip_data), width = 5, FUN = median, na.rm=T) # rolling median smooth #speed
         
         feature_speed <- generateDistribution(speed, 'speed', 0.05)
         avg_speed <- mean(speed, na.rm = T)
@@ -65,18 +65,18 @@ for (driver in drivers){
         inter_speed <- length(which(speed < 17 & speed > 7))/length(speed)
         
         ### Heading / Angle Features ###
-        cur <- rollapply(calcCurvature(trip_data,2)[,3], width = 5, FUN = median)
+        cur <- rollapply(calcCurvature(trip_data,2)[,3], width = 5, FUN = median, na.rm=T)
         r <- Cartesian_to_Polar(trip_data,2) #initial radius **calcCurvature()**
-        r <- rollapply(r, width = 5, FUN = median) #radius & theta
+#         r <- rollapply(r, width = 5, FUN = median, na.rm=T) #radius & theta
         angle <- degree_cal(r,2) #angle(0-180)
         tp2 <- which(cur <= 100) #cur points
-        tanAcc <- rollapply(calcTangAccel(trip_data,2), width = 5, FUN = median) #tangential acceleration
-        norAcc <- rollapply(calcNormAccel(speed,cur), width = 5, FUN = median) #normal acceleration
+        tanAcc <- rollapply(calcTangAccel(trip_data,2), width = 5, FUN = median, na.rm=T) #tangential acceleration
+        norAcc <- rollapply(calcNormAccel(speed,cur), width = 5, FUN = median, na.rm=T) #normal acceleration
         #         norAcc[which(norAcc == Inf)] <- 0 #normal acceleration
         totAcc <- totalAccel(tanAcc,norAcc) #total acceleration
         
         feature_heading <- generateDistribution(angle,'heading', 0.05)
-        feature_curvature <- curvatureDistribution(cur[tp2,3], 0.05) #cur[tp,3]
+        feature_curvature <- curvatureDistribution(cur[tp2], 0.05) #cur[tp,3]
         feature_tanAcc <- generateDistribution(tanAcc,'tanAcc', 0.05)
         feature_norAcc <- generateDistribution(norAcc,'norAcc', 0.05)
         feature_totAcc <- generateDistribution(totAcc,'totAcc', 0.05)
@@ -131,4 +131,4 @@ names(main_df) <- c('driver','trip','trip_distance','driver_time','fly_distance'
                     'avg_tanAcc','avg_norAcc','avg_cur','avg_totAcc','med_tanAcc','med_norAcc','med_cur','med_totAcc',
                     names(feature_turn_sp),'turn_time','avg_turn_sp','sd_turn_sp','med_turn_sp','ex_turn','target')
 # main_df[,67:76][which(main_df[,67:76]>100),] <- 101
-save(main_df, file='data/main_df_214features.RData')
+save(main_df, file='data/main_df_214features_moving_avg.RData')
