@@ -39,7 +39,7 @@ classifier <- function(driver, model='gbm', nrOfDriversToCompare=5, features) {
 # library(doMC)
 # registerDoMC(cores = 2)
 # load('Driver-Telematics-Analysis/feature_selection/rfe_var_190.RData')
-set.seed(886)
+set.seed(123)
 fitControl <- trainControl(method = "none",number = 10,repeats = 3,classProbs = TRUE,
                            summaryFunction = twoClassSummary,adaptive = list(min = 4,alpha = 0.05,method = "BT",complete = TRUE))
 gbmGrid <-  expand.grid(mtry=22)
@@ -53,5 +53,5 @@ for (driver in drivers){ #avNNet
     submission <- rbind(submission, result)
 }
 
-write.csv(submission, file = 'submission_gbm_176_semi.csv', quote = F, row.names = F)
+write.csv(submission, file = 'submission_rf_176_semi.csv', quote = F, row.names = F)
 sum(is.na(submission))
