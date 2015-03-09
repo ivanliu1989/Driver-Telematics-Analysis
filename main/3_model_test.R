@@ -29,13 +29,10 @@ g <- train(x = data.matrix(train[,c(feature_list)]), y = as.factor(train$target)
 #* 6. svmLinear | 0.76341 | 0.80957
 #* 7. svmRadial - sigma=0.01546107 C=8 | 0.69989
 # 8. gbm - ntree150,inter4 | n.trees = 450, interaction.depth = 8 and shrinkage = 0.1 
-# | (0.8933900) 0.80510 | retrain: 0.51472 | 0.84145 | 0.83521
 #* 10. rf - mtry17 | 0.81715 / 0.81915 | 0.84880 | 0.84629 /0.84154 | 0.84077 none pre
 #* 11. glm | 0.76609 | 0.65470
-# 12. nnet - size1,decay0.1 | 0.77582 | 0.80379 || neuralnet
-# ensemble 0.88327
-# 15. AdaBag / ada
-# 16. avNNet - size = 9, decay = 0.1, bag = FALSE
+#* 12. nnet - size1,decay0.1 | 0.77582 | 0.80379 || neuralnet
+#* 16. avNNet - size = 9, decay = 0.1, bag = FALSE
 
 
 ## 1. bdk/xyf(som) - xdim = 7, ydim = 9, xweight = 0.7857143 and topo = hexagonal | (0.7294500)
