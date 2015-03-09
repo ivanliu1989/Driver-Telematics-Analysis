@@ -25,7 +25,7 @@ g <- train(x = data.matrix(train[,c(feature_list)]), y = as.factor(train$target)
 # p <- predict(g, newdata = data.matrix(currentData[,-c(1,2,80)]), type = "prob")
 
 ### Models:
-# 4. knn - k = 13 | (0.8336250) 0.76644 | 0.79242
+#* 4. knn - k = 13 | (0.8336250) 0.76644 | 0.79242
 #* 6. svmLinear | 0.76341 | 0.80957
 #* 7. svmRadial - sigma=0.01546107 C=8 | 0.69989
 # 8. gbm - ntree150,inter4 | n.trees = 450, interaction.depth = 8 and shrinkage = 0.1 
