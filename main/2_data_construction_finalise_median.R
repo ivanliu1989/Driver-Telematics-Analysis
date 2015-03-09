@@ -71,7 +71,7 @@ for (driver in drivers){
         angle <- degree_cal(r,2) #angle(0-180)
         tp2 <- which(cur <= 100) #cur points
         tanAcc <- rollapply(calcTangAccel(trip_data,2), width = 5, FUN = median, na.rm=T) #tangential acceleration
-        norAcc <- rollapply(calcNormAccel(speed,cur), width = 5, FUN = median, na.rm=T) #normal acceleration
+        norAcc <- calcNormAccel(speed,cur) #normal acceleration
         #         norAcc[which(norAcc == Inf)] <- 0 #normal acceleration
         totAcc <- totalAccel(tanAcc,norAcc) #total acceleration
         
