@@ -63,6 +63,9 @@ for(driver in sub_drivers){
     cb_num <- 0
     for (trip in 1:200){
         if(trip >= 200){
+            match_matrix_single <- match_matrix_single[which(match_matrix_single[,1]>0),]
+            cb_num <- length(table(match_matrix_single))
+            print(paste0('Driver ',driver,' Trips Match: ', trip, ' | ', other, '!!! Total:', cb_num))
             break
         }
         files <- paste0(datadirectory, driver, '/', trip, ".csv")
@@ -83,10 +86,7 @@ for(driver in sub_drivers){
                         #plot(tx,col='blue');points(ty,col='red')
                         match_matrix[d_num,] <- c(paste0(driver,'_',trip),paste0(driver,'_',other)) 
                         match_matrix_single[cb_num,] <- c(paste0(driver,'_',trip),paste0(driver,'_',other))   
-                        if(trip == 199){
-                            cb_num <- length(table(match_matrix_single))
-                            print(paste0('Driver ',driver,' Trips Match: ', trip, ' | ', other, '!!! Total:', cb_num))
-                        } 
+                         
                         if(d_num %% 5000 == 0 ){
                             save(match_matrix, file=paste0('repeated_map_thereshold_',threshold,'_driver_',driver,'_num_',d_num,'.RData'))
                         }
