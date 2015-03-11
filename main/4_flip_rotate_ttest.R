@@ -93,3 +93,53 @@ for(driver in sub_drivers){
 match_matrix <- match_matrix[which(match_matrix[,1]>0),]
 length(table(match_matrix))
 save(match_matrix, file=paste0('repeated_map_thereshold_',threshold,'_driver_',sub_drivers[1],'_',sub_drivers[length(sub_drivers)],'.RData'))
+
+########################
+### T.TEST Detection ###
+########################
+match_matrix <- matrix(0, nrow = length(drivers)*100, ncol = 2, dimnames = list(NULL, c('driver_trip', 'matched_trip')))
+start <- date()
+print(start)
+sub_drivers <- 1 # drivers[1:(length(drivers)/2)]
+d_num <- 0
+for(driver in drivers){
+    print(date())
+    for (trip in 1:200){
+        if(trip >= 200){
+            break
+        }
+        tx <- main_df[which(main_df[,1]==driver&main_df[,2]==trip),-c(1,2,172)]
+        ttest_diff <- c()
+        for(other in c((trip+1):200)){
+            ty <- main_df[which(main_df[,1]==driver&main_df[,2]==other),-c(1,2,172)]
+            ttest_same <- t.test(tx,ty)$p.value
+            
+            test_driver <- sample(drivers[which(drivers!=driver)],50)    
+            test_trip <- sample(1:200,5) 
+            
+            for (i in test_driver){
+                for (j in test_trip){
+                    tz <- main_df[which(main_df[,1]==i&main_df[,2]==j),-c(1,2,172)]
+                    ttest_diff <- c(ttest_diff, t.test(tx,tz)$p.value)
+                }
+            }
+            
+            if(ttest_same>max(ttest_diff)){
+                d_num <- d_num + 1
+                print(paste0('Driver ',driver,' Trips Match: ', trip, ' | ', other, '!!!'))
+                match_matrix[d_num,] <- c(paste0(driver,'_',trip),paste0(driver,'_',other))    
+                
+                if(d_num %% 5000 == 0 ){
+                    save(match_matrix, file=paste0('repeated_map_ttest_',threshold,'_driver_',driver,'_num_',d_num,'.RData'))
+                }
+            }
+        }
+    }
+}
+match_matrix <- match_matrix[which(match_matrix[,1]>0),]
+length(table(match_matrix))
+save(match_matrix, file=paste0('repeated_map_thereshold_',threshold,'_driver_',sub_drivers[1],'_',sub_drivers[length(sub_drivers)],'.RData'))
+
+
+t.test(main_df[17,-c(1,2,ncol(main_df))],main_df[170,-c(1,2,ncol(main_df))])$p.value
+t.test(main_df[31,-c(1,2,ncol(main_df))],main_df[160,-c(1,2,ncol(main_df))])$p.value
