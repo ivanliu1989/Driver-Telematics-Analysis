@@ -5,7 +5,7 @@ require(caret);require(data.table)
 head(main_df)
 datadirectory <- 'data/drivers/'
 drivers <- sort(as.numeric(list.files(datadirectory)))
-driver <- 2048
+driver <- 1
 model <- 'nb'
 
 set.seed(888)
