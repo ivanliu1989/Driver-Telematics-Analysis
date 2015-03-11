@@ -50,15 +50,17 @@ sametrip <- function(tx,ty){
 ########################
 ### Detect Same Trip ###
 ########################
-threshold <- 0.03
+threshold <- 0.1
 d_num <- 0
-dist <- 2.552923e+01
+dist <- 2.552923#e+01
 match_matrix <- matrix(0, nrow = length(drivers)*100, ncol = 2, dimnames = list(NULL, c('driver_trip', 'matched_trip')))
 start <- date()
 print(start)
-sub_drivers <- 1 # drivers[1:(length(drivers)/2)]
+sub_drivers <- drivers[1:(length(drivers)/2)]
 for(driver in sub_drivers){
+    match_matrix_single <- matrix(0, nrow = 4000, ncol = 2, dimnames = list(NULL, c('driver_trip', 'matched_trip')))
     print(date())
+    cb_num <- 0
     for (trip in 1:200){
         if(trip >= 200){
             break
@@ -75,12 +77,16 @@ for(driver in sub_drivers){
                 
                 if(distance(ty)>=dist){
                     ty <- flip(rotate_trip(ty))
-                    if(t.test(tx,ty)$p.value<=0.05){
+                    if(sametrip(tx,ty)){
+                        cb_num <- cb_num + 1
                         d_num <- d_num + 1
-                        print(paste0('Driver ',driver,' Trips Match: ', trip, ' | ', other, '!!!'))
-                        plot(tx,col='blue');points(ty,col='red')
-                        match_matrix[d_num,] <- c(paste0(driver,'_',trip),paste0(driver,'_',other))    
-                        
+                        #plot(tx,col='blue');points(ty,col='red')
+                        match_matrix[d_num,] <- c(paste0(driver,'_',trip),paste0(driver,'_',other)) 
+                        match_matrix_single[cb_num,] <- c(paste0(driver,'_',trip),paste0(driver,'_',other))   
+                        if(trip == 200){
+                            cb_num <- length(table(match_matrix_single))
+                            print(paste0('Driver ',driver,' Trips Match: ', trip, ' | ', other, '!!! Total:', cb_num))
+                        } 
                         if(d_num %% 5000 == 0 ){
                             save(match_matrix, file=paste0('repeated_map_thereshold_',threshold,'_driver_',driver,'_num_',d_num,'.RData'))
                         }
@@ -109,8 +115,8 @@ for(driver in drivers){
             break
         }
         tx <- main_df[which(main_df[,1]==driver&main_df[,2]==trip),-c(1,2,172)]
-        ttest_diff <- c()
         for(other in c((trip+1):200)){
+            ttest_diff <- c()
             ty <- main_df[which(main_df[,1]==driver&main_df[,2]==other),-c(1,2,172)]
             ttest_same <- t.test(tx,ty)$p.value
             
@@ -123,7 +129,7 @@ for(driver in drivers){
                     ttest_diff <- c(ttest_diff, t.test(tx,tz)$p.value)
                 }
             }
-            
+            print(paste0('TTEST1: ',ttest_same,' TTEST2: ', max(ttest_diff)))
             if(ttest_same>max(ttest_diff)){
                 d_num <- d_num + 1
                 print(paste0('Driver ',driver,' Trips Match: ', trip, ' | ', other, '!!!'))
