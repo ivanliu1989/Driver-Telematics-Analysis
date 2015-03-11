@@ -6,11 +6,11 @@ head(main_df)
 datadirectory <- 'data/drivers/'
 drivers <- sort(as.numeric(list.files(datadirectory)))
 driver <- 2048
-model <- 'nnet'
+model <- 'nb'
 
 set.seed(888)
 fitControl <- trainControl(method = "adaptive_cv",number = 10,repeats = 5,classProbs = TRUE,
-                           summaryFunction = twoClassSummary,adaptive = list(min = 8,alpha = 0.05,method = "BT",complete = TRUE))
+                           summaryFunction = twoClassSummary,adaptive = list(min = 16,alpha = 0.05,method = "BT",complete = TRUE))
 
 currentData <- main_df[main_df[,1]==driver,]
 # currentData$target <- 'Yes'
@@ -21,7 +21,7 @@ train <- rbind(currentData, refData)
 feature_list <- colnames(main_df[,-c(1,2,ncol(main_df))])
 
 g <- train(x = data.matrix(train[,c(feature_list)]), y = as.factor(train$target), method = model, trControl = fitControl, 
-           metric = "ROC", tuneLength=8, preProc = c("center", "scale", 'Yeo-Johnson'))#, "pca", repeats = 15, trace = FALSE)  #verbose=T,
+           metric = "ROC", tuneLength=16, preProc = c("center", "scale", 'pca'))#, "pca", repeats = 15, trace = FALSE)  #verbose=T,
 # p <- predict(g, newdata = data.matrix(currentData[,-c(1,2,80)]), type = "prob")
 
 ### Models:
@@ -39,6 +39,6 @@ g <- train(x = data.matrix(train[,c(feature_list)]), y = as.factor(train$target)
 ## 2. gamboost | *
 ## 3. glmnet - alpha = 0.7545455 and lambda = 0.1 | (0.6896600)
 ## 5. logreg | *
-## 9. nb - LF0,kernel=T | 0.72578
+## 9. nb - fL=0,usekernel=T | 0.72578
 ## 13. LMT - | *
 ## 14. bayesglm - | *
