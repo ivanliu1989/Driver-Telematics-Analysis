@@ -83,7 +83,7 @@ for(driver in sub_drivers){
                         #plot(tx,col='blue');points(ty,col='red')
                         match_matrix[d_num,] <- c(paste0(driver,'_',trip),paste0(driver,'_',other)) 
                         match_matrix_single[cb_num,] <- c(paste0(driver,'_',trip),paste0(driver,'_',other))   
-                        if(trip == 200){
+                        if(trip == 199){
                             cb_num <- length(table(match_matrix_single))
                             print(paste0('Driver ',driver,' Trips Match: ', trip, ' | ', other, '!!! Total:', cb_num))
                         } 
