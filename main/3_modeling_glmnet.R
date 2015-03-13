@@ -25,7 +25,7 @@ classifier <- function(driver, model='gbm', nrOfDriversToCompare=5, features) {
     train[,c(features)] <- predict(preProcValues, train[,c(features)])
     currentData[,c(features)] <- predict(preProcValues, currentData[,c(features)])
     
-    g <- glmnet(x = data.matrix(train[,-c(1,2,ncol(train))]), y = data.matrix(train$target),family = "binomial", alpha = 0.5, 
+    g <- glmnet(x = data.matrix(train[,-c(1,2,ncol(train))]), y = data.matrix(train$target),family = "binomial", alpha = 0.99, 
                 standardize = F, intercept = T, type.logistic = "Newton")
     p <- predict(g, newx = data.matrix(currentData[,-c(1,2,ncol(currentData))]), type = "response")
     
@@ -39,7 +39,7 @@ classifier <- function(driver, model='gbm', nrOfDriversToCompare=5, features) {
 # library(doMC)
 # registerDoMC(cores = 2)
 # load('Driver-Telematics-Analysis/feature_selection/rfe_var_190.RData')
-set.seed(88)
+set.seed(6886)
 
 feature_list <- colnames(main_df[,-c(1,2,ncol(main_df))])
 submission <- data.frame()
@@ -51,5 +51,5 @@ for (driver in drivers){
     submission <- rbind(submission, result)
 }
 
-write.csv(submission, file = 'submission_glmnet_172_Newton_PCA_semi.csv', quote = F, row.names = F)
+write.csv(submission, file = 'submission_glmnet_172_099_PCA_semi.csv', quote = F, row.names = F)
 sum(is.na(submission))
