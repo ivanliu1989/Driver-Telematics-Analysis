@@ -53,5 +53,5 @@ for (driver in drivers){ #avNNet
     submission <- rbind(submission, result)
 }
 
-write.csv(submission, file = 'submission_rf_176_semi_2123.csv', quote = F, row.names = F)
+write.csv(submission, file = 'submission_rf_176_semi_20.csv', quote = F, row.names = F)
 sum(is.na(submission))

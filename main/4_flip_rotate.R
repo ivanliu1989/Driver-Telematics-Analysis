@@ -196,7 +196,7 @@ sametrip <- function(tx,ty){
 ########################
 ### Detect Same Trip ###
 ########################
-threshold <- 0.03
+threshold <- 0.05
 d_num <- 0
 dist <- 2.552923e+01
 match_matrix <- matrix(0, nrow = length(drivers)*100, ncol = 2, dimnames = list(NULL, c('driver_trip', 'matched_trip')))
