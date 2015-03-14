@@ -32,4 +32,4 @@ for (i in 1:nrow(pred)) {
 }
 
 colnames(submission) = c("driver_trip","prob")
-write.csv(submission, "Driver/submission_ensemble.csv", row.names=F, quote=F)
+write.csv(submission, "submission_ensemble.csv", row.names=F, quote=F)

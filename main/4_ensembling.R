@@ -41,31 +41,32 @@ files <- list.files(datadirectory,full.names = T)
 i <- 0
 ensem_prob <- matrix(0, nrow = 547200, ncol = 1, dimnames = list(NULL, NULL))
 
-# substrRight <- function(x, n){
-#     substr(x, nchar(x)-n+1, nchar(x)-4)
-# }
-# 
-# accuracy <- sum(as.numeric(substrRight(files, 11)))
-# for(file in files){
-#     result <- data.frame(fread(file,header = T, stringsAsFactor = F))
-#     ensem_prob <- ensem_prob + result[,2]*as.numeric(substrRight(file, 11))/accuracy
-# }
-# final_prob <- ensem_prob
-
-for(file in files){
-    result <- data.frame(fread(file,header = T, stringsAsFactor = F))
-    ensem_prob <- ensem_prob + result[,2]
-    i = i + 1;
+substrRight <- function(x, n){
+    substr(x, nchar(x)-n+1, nchar(x)-4)
 }
 
-final_prob <- ensem_prob/i
+accuracy <- sum(as.numeric(substrRight(files, 11)))
+for(file in files){
+    result <- data.frame(fread(file,header = T, stringsAsFactor = F))
+    ensem_prob <- ensem_prob + result[,2]*as.numeric(substrRight(file, 11))/accuracy
+}
+final_prob <- ensem_prob
+
+# for(file in files){
+#     result <- data.frame(fread(file,header = T, stringsAsFactor = F))
+#     ensem_prob <- ensem_prob + result[,2]
+#     i = i + 1;
+# }
+# 
+# final_prob <- ensem_prob/i
 ensemble <- data.frame(driver_trip=result[,1], prob=final_prob)
-write.csv(ensemble, file = 'ensemble_rf_avNNet_gbm_svm.csv', quote = F, row.names = F)
+write.csv(ensemble, file = 'Fourth_Try.csv', quote = F, row.names = F)
 
 ### repeat ###
 load('Driver-Telematics-Analysis/repeated_trips/repeated_map_thereshold_0.03_ALL.RData')
+load('Driver-Telematics-Analysis/match_trip/repeated_map_thereshold_0.05_ALL.RData')
 ensemble <- data.table(ensemble)
 ensemble[driver_trip %in% match_matrix,prob]
 ensemble[driver_trip %in% match_matrix,prob:=1]
-write.csv(ensemble, file = 'Third_try_52_082_trip_match.csv', quote = F, row.names = F)
+write.csv(ensemble, file = 'Fourth_Try_trip_match_005.csv', quote = F, row.names = F)
 
