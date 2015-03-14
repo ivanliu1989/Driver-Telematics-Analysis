@@ -237,4 +237,6 @@ for(driver in sub_drivers){
     }
 }
 match_matrix <- match_matrix[which(match_matrix[,1]>0),]
-save(match_matrix, file=paste0('repeated_map_thereshold_',threshold,'_driver_',sub_drivers[1],'_',sub_drivers[length(sub_drivers)],'.RData'))
+save(match_matrix, file=paste0('repeated_map_thereshold_',threshold,'_driver_',sub_drivers[1],'_',sub_drivers[length(sub_drivers)],'_2.RData'))
+
+load('repeated_map_thereshold_0.05_driver_2174_3612_2.RData')
