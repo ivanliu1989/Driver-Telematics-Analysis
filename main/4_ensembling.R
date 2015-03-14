@@ -60,7 +60,7 @@ for(file in files){
 
 final_prob <- ensem_prob/i
 ensemble <- data.frame(driver_trip=result[,1], prob=final_prob)
-write.csv(ensemble, file = 'Third_try_33_083.csv', quote = F, row.names = F)
+write.csv(ensemble, file = 'ensemble_rf_avNNet.csv', quote = F, row.names = F)
 
 ### repeat ###
 load('Driver-Telematics-Analysis/repeated_trips/repeated_map_thereshold_0.03_ALL.RData')
