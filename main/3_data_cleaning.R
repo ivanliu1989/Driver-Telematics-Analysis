@@ -6,7 +6,7 @@ require(caret);require(data.table)
 
 # main_df <- data.frame(fread('data/main_df_136features.csv',header = T, stringsAsFactor = F))
 load(file='data/main_df_172_median_smooth.RData')
-answer <- data.frame(fread('Third_try_70_08_trip_match_weighted.csv',header = T, stringsAsFactor = F))
+answer <- data.frame(fread('ensemble_rf_avNNet_gbm.csv',header = T, stringsAsFactor = F))
 answer[which(answer[,2]>=0.5),2] <- 'Yes'
 answer[which(answer[,2]<0.5),2] <- 'No'
 main_df$target <- answer[,2]

@@ -6,7 +6,7 @@ head(main_df)
 datadirectory <- 'data/drivers/'
 drivers <- sort(as.numeric(list.files(datadirectory)))
 driver <- 1
-model <- 'nb'
+model <- 'avNNet'
 
 set.seed(888)
 fitControl <- trainControl(method = "adaptive_cv",number = 10,repeats = 5,classProbs = TRUE,
@@ -21,7 +21,7 @@ train <- rbind(currentData, refData)
 feature_list <- colnames(main_df[,-c(1,2,ncol(main_df))])
 
 g <- train(x = data.matrix(train[,c(feature_list)]), y = as.factor(train$target), method = model, trControl = fitControl, 
-           metric = "ROC", tuneLength=16, preProc = c("center", "scale", 'pca'))#, "pca", repeats = 15, trace = FALSE)  #verbose=T,
+           metric = "ROC", tuneLength=16, preProc = c("center", "scale", 'pca'),repeats = 15, trace = T)#, "pca",   #verbose=T,
 # p <- predict(g, newdata = data.matrix(currentData[,-c(1,2,80)]), type = "prob")
 
 ### Models:
