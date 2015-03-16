@@ -26,7 +26,7 @@ classifier <- function(driver, model='gbm', nrOfDriversToCompare=5, features) {
     #model
     
     g <- train(x = data.matrix(train[,c(features)]), y = as.factor(train$target), method = model,trControl = fitControl, 
-               tuneLength = 6,metric = "ROC",tuneGrid = gbmGrid, preProc = c("center", "scale","pca"),repeats = 15, trace = FALSE)
+               tuneLength = 6,metric = "ROC",tuneGrid = gbmGrid)#, preProc = c("center", "scale","pca"),repeats = 15, trace = FALSE)
     p <- predict(g, newdata = data.matrix(currentData[,c(features)]), type = "prob")
     
     result <- data.frame(driver_trip=paste0(currentData[,1],'_',currentData[,2],sep=''), prob=p$Yes)
@@ -42,12 +42,12 @@ registerDoMC(cores = 2)
 set.seed(3823)
 fitControl <- trainControl(method = "none",number = 10,repeats = 3,classProbs = TRUE,
                            summaryFunction = twoClassSummary,adaptive = list(min = 4,alpha = 0.05,method = "BT",complete = TRUE))
-gbmGrid <-  expand.grid(size = 9, decay = 0.1, bag = T)
+gbmGrid <-  expand.grid(mtry=2)
 feature_list <- colnames(main_df[,-c(1,2,ncol(main_df))])
 submission <- data.frame()
 
 for (driver in drivers){ #avNNet
-    result <- classifier(driver,'avNNet',25,feature_list)
+    result <- classifier(driver,'rf',20,feature_list)
     print(paste0('driver: ', driver, ' | ' ,date())) 
     
     submission <- rbind(submission, result)

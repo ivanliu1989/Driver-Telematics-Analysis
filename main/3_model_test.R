@@ -6,22 +6,22 @@ head(main_df)
 datadirectory <- 'data/drivers/'
 drivers <- sort(as.numeric(list.files(datadirectory)))
 driver <- 1
-model <- 'avNNet'
+model <- 'rf'
 
 set.seed(888)
 fitControl <- trainControl(method = "adaptive_cv",number = 10,repeats = 5,classProbs = TRUE,
-                           summaryFunction = twoClassSummary,adaptive = list(min = 16,alpha = 0.05,method = "BT",complete = TRUE))
+                           summaryFunction = twoClassSummary,adaptive = list(min = 12,alpha = 0.05,method = "BT",complete = TRUE))
 
 currentData <- main_df[main_df[,1]==driver,]
 # currentData$target <- 'Yes'
-test_num <- sample(drivers[which(drivers!=driver)],5)
+test_num <- sample(drivers[which(drivers!=driver)],20)
 refData <-  main_df[main_df[,1] %in% test_num,]
 refData$target <- 'No'
 train <- rbind(currentData, refData)
 feature_list <- colnames(main_df[,-c(1,2,ncol(main_df))])
 
 g <- train(x = data.matrix(train[,c(feature_list)]), y = as.factor(train$target), method = model, trControl = fitControl, 
-           metric = "ROC", tuneLength=16, preProc = c("center", "scale", 'pca'),repeats = 15, trace = T)#, "pca",   #verbose=T,
+           metric = "ROC", tuneLength=12)#, preProc = c("center", "scale", 'pca'),repeats = 15, trace = T)#, "pca",   #verbose=T,
 # p <- predict(g, newdata = data.matrix(currentData[,-c(1,2,80)]), type = "prob")
 
 ### Models:
