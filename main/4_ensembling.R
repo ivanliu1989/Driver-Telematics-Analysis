@@ -44,8 +44,12 @@ result <- data.frame(fread('submission_ensemble.csv',header = T, stringsAsFactor
 result2 <- data.frame(fread('Final_Try_trip_match_910.csv',header = T, stringsAsFactor = F))
 result[,2] <- apply(data.matrix(result[,2]), MARGIN = 2, FUN = function(X) (X - min(X))/diff(range(X)))
 head(result);head(result2)
+result[,2] <- (data.matrix(result[,2])+data.matrix(result2[,2]))/2
 load('Driver-Telematics-Analysis/repeated_trips/repeated_map_thereshold_0.03_ALL.RData')
 ensemble <- data.table(result)
 ensemble[driver_trip %in% match_matrix,prob]
 ensemble[driver_trip %in% match_matrix,prob:=1]
-write.csv(ensemble, file = 'Final_Try_trip_match_ensemble2.csv', quote = F, row.names = F)
+
+ensemble[prob >= 0.9]
+ensemble[prob <= 0.25]
+write.csv(ensemble, file = 'Final_Try_trip_match_ensemble3.csv', quote = F, row.names = F)
