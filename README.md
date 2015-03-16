@@ -39,12 +39,12 @@ Driver 1, trip 1 is a very good example to try and define the turns and straight
 3. RandomForest : Is this any better than GBM for noise?
 4. NNET
 
-#### VALUABLE TRY
+#### VALUABLE TRY:
 1. Take the false trip data (all of it, all the data from all the other drivers) and run a k-means clustering with 200 or more clusters. Now use the centers of the resulting clusters as your target=0 data for all drivers.
 2. Next idea is sort of like a "by-hand" boosting algorithm but with more weight added to the 0 labels only.
 Take lots of 0 target trips and use them with the drivers' 200 trips (as target=1) to train a classifier. Now predict on just your 0 target trips and drop some percentage of them that had the lowest predicted probability as target=1. Now you're left with only those trips that are closest to the decision boundary. Retrain with the drivers' original trips and these zeros only.
 
-#### SOME GOOD RESULTS
+#### SOME GOOD RESULTS:
 1. speed quantile features and gradient boost method
 2. speed, acceleration and curve features
 3. trimming outliers worked better than averaging them out 
