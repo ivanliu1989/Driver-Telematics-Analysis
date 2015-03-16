@@ -4,9 +4,10 @@ Driver Telematics Analysis
 For this competition, Kaggle participants must come up with a "telematic fingerprint" capable of distinguishing when a trip was driven by a given driver. The features of this driver fingerprint could help assess risk and form a crucial piece of a larger telematics puzzle.
 
 #### FINAL SOLUTION:
-An ensemble model of random forest, neural networks and gradient boosting. <br>
-Have also tried other models like SVMs (Linear,Radial kernel), logistic regression, naive bayes, knn and kmeans, but no improvement found. <br>
-Have also implemented a very simple trip match method to gain a small boost based on basic ensemble model. More advanced trip matching method can be developed if there are more time and more capable machines provided. <br>
+- An ensemble model of random forest, neural networks and gradient boosting. <br>
+- Have also tried other models like SVMs (Linear,Radial kernel), logistic regression, naive bayes, knn and kmeans, but no improvement found. <br>
+- Have implemented a very simple trip match method to gain a small boost based on basic ensemble model. More advanced trip matching method can be developed if there are more time and more capable machines provided. <br>
+- For data cleaning, both kalman filter and moving average are used to reduce data noise and remove inappropriate outliers. <br>
 Private ranking: 77th/1562 (5%) <br>
 
 #### TIPS:
