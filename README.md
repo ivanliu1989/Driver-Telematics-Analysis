@@ -3,10 +3,13 @@ Driver Telematics Analysis
 
 For this competition, Kaggle participants must come up with a "telematic fingerprint" capable of distinguishing when a trip was driven by a given driver. The features of this driver fingerprint could help assess risk and form a crucial piece of a larger telematics puzzle.
 
-#### Update:
-Private rank: 77th/1562 (5%)
+#### FINAL SOLUTION:
+An ensemble model of random forest, neural networks and gradient boosting. 
+Have also tried other models like SVMs (Linear,Radial kernel), logistic regression, naive bayes, knn and kmeans, but no improvement found.
+Have also implemented a very simple trip match method to gain a small boost based on basic ensemble model. More advanced trip matching method can be developed if there are more time and more capable machines provided.
+Private ranking: 77th/1562 (5%)
 
-#### Tips:
+#### TIPS:
 1. one driver in one car
 2. units of x and y - meters
 3. In Telematics ignition "on" to ignition "off" is defined as a "trip"
@@ -29,20 +32,18 @@ Driver 1, trip 1 is a very good example to try and define the turns and straight
 	- use gdistance from package rgeos to measure the distance or similarity between journeys
 
 
-#### algorithm:
+#### ALGORITHM:
 1. GBM : The train MSE is will obviously go down with the number of tree's. So should I stop at maybe 150 tree's assuming that I am over-fitting after that.
-
 2. SVM :  Is SVM better than GBM in terms of dealing with Noise.
-
 3. RandomForest : Is this any better than GBM for noise?
+4. NNET
 
-
-#### Valuable try
+#### VALUABLE TRY
 1. Take the false trip data (all of it, all the data from all the other drivers) and run a k-means clustering with 200 or more clusters. Now use the centers of the resulting clusters as your target=0 data for all drivers.
 2. Next idea is sort of like a "by-hand" boosting algorithm but with more weight added to the 0 labels only.
 Take lots of 0 target trips and use them with the drivers' 200 trips (as target=1) to train a classifier. Now predict on just your 0 target trips and drop some percentage of them that had the lowest predicted probability as target=1. Now you're left with only those trips that are closest to the decision boundary. Retrain with the drivers' original trips and these zeros only.
 
-#### Some good results
+#### SOME GOOD RESULTS
 1. speed quantile features and gradient boost method
 2. speed, acceleration and curve features
 3. trimming outliers worked better than averaging them out 
