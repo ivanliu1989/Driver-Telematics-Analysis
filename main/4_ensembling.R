@@ -50,6 +50,7 @@ ensemble <- data.table(result)
 ensemble[driver_trip %in% match_matrix,prob]
 ensemble[driver_trip %in% match_matrix,prob:=1]
 
-ensemble[prob >= 0.9]
-ensemble[prob <= 0.25]
-write.csv(ensemble, file = 'Final_Try_trip_match_ensemble3.csv', quote = F, row.names = F)
+ensemble[prob >= 0.9, prob:=1]
+ensemble[prob <= 0.25, prob:=0]
+ensemble
+write.csv(ensemble, file = 'Final_Try_trip_match_Last.csv', quote = F, row.names = F)
