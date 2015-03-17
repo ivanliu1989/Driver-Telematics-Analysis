@@ -8,7 +8,7 @@ For this competition, Kaggle participants must come up with a "telematic fingerp
 - Have also tried other models like SVMs (Linear,Radial kernel), logistic regression, naive bayes, knn and kmeans, but no improvement found. <br>
 - Have implemented a very simple <b>trip match</b> method to gain a small boost based on basic ensemble model. More advanced trip matching method can be developed if there are more time and more capable machines provided. <br>
 - For data cleaning, both <b>kalman filter</b> and <b>moving average</b> are used to reduce data noise and remove inappropriate outliers. <br>
-- Private ranking: <b>77th/1562 (5%)</b> <br>
+- Final Ranking: <b>76th/1562 (5%)</b> <br>
 
 #### TIPS:
 1. one driver in one car
