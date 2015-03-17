@@ -1,7 +1,8 @@
 Driver Telematics Analysis
 ==========================
-
 For this competition, Kaggle participants must come up with a "telematic fingerprint" capable of distinguishing when a trip was driven by a given driver. The features of this driver fingerprint could help assess risk and form a crucial piece of a larger telematics puzzle.
+
+![alt tag](https://kaggle2.blob.core.windows.net/competitions/kaggle/4031/media/axa_trip.png)
 
 #### FINAL SOLUTION:
 - An <b>ensemble model</b> of random forest, neural networks and gradient boosting. <br>
